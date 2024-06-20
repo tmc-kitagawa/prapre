@@ -21,7 +21,7 @@ class BackendApplicationTests(
 	@Test
 	fun `GETリクエストはOKステータスを返す`(){
 		// localhost/todos に GETリクエストを発行する。
-		val response = restTemplate.getForEntity("http://localhost:$port/presentations", String::class.java)
+		val response = restTemplate.getForEntity("http://localhost:$port/api/presentations", String::class.java)
 		// レスポンスのステータスコードは OK である。
 		assertThat(response.statusCode, equalTo(HttpStatus.OK))
 	}
