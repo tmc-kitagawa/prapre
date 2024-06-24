@@ -1,4 +1,9 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
+import {Route, Routes} from "react-router-dom";
+import Home from "./components/Home";
+import Calibration from "./components/Calibration";
+import Presentation from "./components/Presentation";
+import Result from "./components/Result";
 
 interface Presentation {
     id: number;
@@ -7,7 +12,7 @@ interface Presentation {
     user_id: number;
 }
 
-function App() {
+const App = () => {
 
     axios("/api/presentations")
         .then((res: AxiosResponse<Presentation[]>) =>
@@ -18,9 +23,13 @@ function App() {
         });
 
   return (
-    <>
-
-    </>
+    <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="calibration" element={<Calibration />} />
+        <Route path="presentation" element={<Presentation />} />
+        <Route path="result" element={<Result />} />
+        {/*<Route path="/history" element={<History />} />*/}
+    </Routes>
   )
 }
 
