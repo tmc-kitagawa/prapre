@@ -10,8 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mantine/core": "^7.10.2",
+    "@mantine/dates": "^7.10.2",
+    "@mantine/form": "^7.10.2",
+    "@mantine/hooks": "^7.10.2",
+    "@tabler/icons-react": "^3.6.0",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
+    "dayjs": "^1.11.11",
+    "html-react-parser": "^5.1.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.1",

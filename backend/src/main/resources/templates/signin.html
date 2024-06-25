@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>signin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h2>ようこそ</h2>
+<form action="#" th:action="@{/signin}" method="post">
+    <div>
+        <label for="usernameInput"></label>
+        <input type="text" name="username" id="usernameInput" placeholder="ユーザー名">
+    </div>
+    <div>
+        <label for="passwordInput"></label>
+        <input type="password" name="password" id="passwordInput" placeholder="パスワード">
+    </div>
+    <div class="error-message" th:if="${param.error}">
+        <p>ユーザー名もしくはパスワードが違います</p>
+    </div>
+    <br>
+    <br>
+    <div>
+        <button type="submit">サインイン</button>
+    </div>
+</form>
+<a href="/signup">アカウント作成はこちら</a>
+</body>
+</html>

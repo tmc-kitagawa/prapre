@@ -1,10 +1,13 @@
 import {FC, useEffect} from "react";
 import "./Calibration.scss";
 import {Restart} from "../utils/main"
+import {useLocation} from "react-router-dom";
+import {docLoad} from "../utils/calibration";
 
 const Calibration: FC = () => {
-
+const location = useLocation();
     useEffect(() => {
+        docLoad();
         const webgazer = window.webgazer;
 
         webgazer.setRegression('ridge') /* currently must set regression and tracker */
@@ -93,13 +96,26 @@ const Calibration: FC = () => {
                                     data-bs-dismiss="modal">Close & load saved model
                             </button>
                             <button type="button" id='start_calibration' className="btn btn-primary"
-                                    // data-bs-dismiss="modal" onClick={() => console.log("aaa")}>Calibrate
+                                // data-bs-dismiss="modal" onClick={() => console.log("aaa")}>Calibrate
                                     data-bs-dismiss="modal" onClick={() => Restart()}>Calibrate
                             </button>
                         </div>
                     </div>
 
                 </div>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+            <div>
+                <p>{location.state.time}</p>
+                <p>{location.state.code}</p>
             </div>
         </>
     )

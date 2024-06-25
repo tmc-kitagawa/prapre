@@ -11,5 +11,6 @@ class PresentationsController(val presentationRepository: PresentationRepository
     fun getPresentations(): List<Presentation> {
         return presentationRepository.getPresentations()
     }
+
 }
 
