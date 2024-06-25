@@ -2,11 +2,12 @@ import {FC, MutableRefObject, useEffect, useRef} from "react";
 import { useNavigate } from "react-router-dom";
 import {Button, Center} from '@mantine/core';
 import "./Presentation.scss"
+import { SlideResult } from "../global";
 
-interface SlideResult {
-    countPercentage: number,
-    elapsedTime: number
-}
+// interface SlideResult {
+//     countPercentage: number,
+//     elapsedTime: number
+// }
 
 const Presentation: FC = () => {
     const navigate = useNavigate();
@@ -54,7 +55,7 @@ const Presentation: FC = () => {
         const webgazer = window.webgazer;
         webgazer.end();
         console.log(arrSlideResult);
-        navigate("/result", {state: {result: arrSlideResult}})
+        navigate("/result", {state: arrSlideResult})
     }
 
 
