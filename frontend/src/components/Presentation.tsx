@@ -1,5 +1,5 @@
 import {FC, MutableRefObject, useEffect, useRef} from "react";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {Button, Center} from '@mantine/core';
 import "./Presentation.scss"
 
@@ -18,10 +18,10 @@ const Presentation: FC = () => {
     let elapsedTime: MutableRefObject<number> = useRef(0)
     const arrSlideResult: SlideResult[] = [];
 
+    const webgazer = window.webgazer;
     useEffect(() => {
-        const webgazer = window.webgazer;
         webgazer
-            .setGazeListener((data, clock) => {
+            .setGazeListener((data: any) => {
                 data.y < 300 && ++countVariable.current;
                 ++countAll.current;
                 console.log("countVariable : ", countVariable)
@@ -51,7 +51,7 @@ const Presentation: FC = () => {
         // elapsedTime.current = Number(new Date()) - slideStartTime.current;
         // console.log("countPercentage :" , countPercentage.current)
         // console.log("elapsedTime :" , elapsedTime.current)
-        const webgazer = window.webgazer;
+        // const webgazer = window.webgazer;
         webgazer.end();
         console.log(arrSlideResult);
         navigate("/result", {state: {result: arrSlideResult}})
