@@ -4,6 +4,12 @@ import {Restart} from "../utils/main"
 import {useLocation} from "react-router-dom";
 import {docLoad} from "../utils/calibration";
 
+declare global {
+    interface Window {
+        webgazer: any
+    }
+}
+
 const Calibration: FC = () => {
 const location = useLocation();
     useEffect(() => {
@@ -12,7 +18,7 @@ const location = useLocation();
 
         webgazer.setRegression('ridge') /* currently must set regression and tracker */
             //.setTracker('clmtrackr')
-            .setGazeListener(function(data, clock) {
+            .setGazeListener(function(data: any, clock: any) {
                   console.log(data); /* data is an object containing an x and y key which are the x and y prediction coordinates (no bounds limiting) */
                   console.log(clock); /* elapsed time in milliseconds since webgazer.begin() was called */
             })
@@ -26,7 +32,7 @@ const location = useLocation();
         var setup = function() {
 
             //Set up the main canvas. The main canvas is used to calibrate the webgazer.
-            var canvas = document.getElementById("plotting_canvas");
+            var canvas: any = document.getElementById("plotting_canvas");
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             canvas.style.position = 'fixed';

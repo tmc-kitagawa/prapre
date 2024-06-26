@@ -7,7 +7,6 @@ import {TimeInput} from '@mantine/dates';
 import {IconClock} from '@tabler/icons-react';
 import {Button, Group, TextInput} from '@mantine/core';
 import {useForm} from '@mantine/form';
-import parse from 'html-react-parser';
 import {useNavigate} from "react-router-dom";
 
 interface Values {
