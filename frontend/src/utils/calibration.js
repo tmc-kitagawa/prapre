@@ -18,20 +18,20 @@ function ClearCanvas(){
 /**
  * Show the instruction of using calibration at the start up screen.
  */
-function PopUpInstruction(){
-  ClearCanvas();
-  swal({
-    title:"アイトラッキングの準備をします",
-    text: "黄色になるまで赤い丸をクリックしてね！！全部で9個あるよ",
-    buttons:{
-      cancel: false,
-      confirm: true
-    }
-  }).then(isConfirm => {
-    ShowCalibrationPoint();
-  });
-
-}
+// function PopUpInstruction(){
+//   ClearCanvas();
+//   swal({
+//     title:"アイトラッキングの準備をします",
+//     text: "黄色になるまで赤い丸をクリックしてね！！全部で9個あるよ",
+//     buttons:{
+//       cancel: false,
+//       confirm: true
+//     }
+//   }).then(isConfirm => {
+//     ShowCalibrationPoint();
+//   });
+//
+// }
 /**
   * Show the help instructions right at the start.
   */
@@ -131,18 +131,18 @@ function calPointClick(node) {
 * checks that all buttons have been clicked 5 times each, and then goes on to measuring the precision
 */
 //$(document).ready(function(){
-function docLoad() {
-  ClearCanvas();
-  helpModalShow();
-    
-    // click event on the calibration buttons
-    document.querySelectorAll('.Calibration').forEach((i) => {
-        i.addEventListener('click', () => {
-            calPointClick(i);
-        })
-    })
-};
-window.addEventListener('load', docLoad);
+// function docLoad() {
+//   ClearCanvas();
+//   helpModalShow();
+//
+//     // click event on the calibration buttons
+//     document.querySelectorAll('.Calibration').forEach((i) => {
+//         i.addEventListener('click', () => {
+//             calPointClick(i);
+//         })
+//     })
+// };
+// window.addEventListener('load', docLoad);
 
 /**
  * Show the Calibration Points
@@ -158,7 +158,7 @@ function ShowCalibrationPoint() {
 /**
 * This function clears the calibration buttons memory
 */
-function ClearCalibration(){
+export const ClearCalibration = () => {
   // Clear data from WebGazer
 
   document.querySelectorAll('.Calibration').forEach((i) => {
@@ -174,4 +174,31 @@ function ClearCalibration(){
 // sleep function because java doesn't have one, sourced from http://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
 function sleep (time) {
   return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+export const docLoad = ()=>{
+    ClearCanvas();
+    helpModalShow();
+
+    // click event on the calibration buttons
+    document.querySelectorAll('.Calibration').forEach((i) => {
+        i.addEventListener('click', () => {
+            calPointClick(i);
+        })
+    })
+};
+
+export const PopUpInstruction = () =>{
+    ClearCanvas();
+    swal({
+        title:"アイトラッキングの準備をします",
+        text: "黄色になるまで赤い丸をクリックしてね！！全部で9個あるよ",
+        buttons:{
+            cancel: false,
+            confirm: true
+        }
+    }).then(isConfirm => {
+        ShowCalibrationPoint();
+    });
+
 }

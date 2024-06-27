@@ -1,15 +1,24 @@
 import {FC, useEffect} from "react";
 import "./Calibration.scss";
 import {Restart} from "../utils/main"
+import {useLocation} from "react-router-dom";
+import {docLoad} from "../utils/calibration";
+
+declare global {
+    interface Window {
+        webgazer: any
+    }
+}
 
 const Calibration: FC = () => {
-
+const location = useLocation();
     useEffect(() => {
+        docLoad();
         const webgazer = window.webgazer;
 
         webgazer.setRegression('ridge') /* currently must set regression and tracker */
             //.setTracker('clmtrackr')
-            .setGazeListener(function(data, clock) {
+            .setGazeListener(function(data: any, clock: any) {
                   console.log(data); /* data is an object containing an x and y key which are the x and y prediction coordinates (no bounds limiting) */
                   console.log(clock); /* elapsed time in milliseconds since webgazer.begin() was called */
             })
@@ -23,7 +32,7 @@ const Calibration: FC = () => {
         var setup = function() {
 
             //Set up the main canvas. The main canvas is used to calibrate the webgazer.
-            var canvas = document.getElementById("plotting_canvas");
+            var canvas: any = document.getElementById("plotting_canvas");
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             canvas.style.position = 'fixed';
@@ -93,13 +102,26 @@ const Calibration: FC = () => {
                                     data-bs-dismiss="modal">Close & load saved model
                             </button>
                             <button type="button" id='start_calibration' className="btn btn-primary"
-                                    // data-bs-dismiss="modal" onClick={() => console.log("aaa")}>Calibrate
+                                // data-bs-dismiss="modal" onClick={() => console.log("aaa")}>Calibrate
                                     data-bs-dismiss="modal" onClick={() => Restart()}>Calibrate
                             </button>
                         </div>
                     </div>
 
                 </div>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+            <div>
+                <p>{location.state.time}</p>
+                <p>{location.state.code}</p>
             </div>
         </>
     )
