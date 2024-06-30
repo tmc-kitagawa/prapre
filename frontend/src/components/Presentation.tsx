@@ -4,6 +4,8 @@ import {Button, Center} from '@mantine/core';
 import "./Presentation.scss"
 import { SlideResult } from "../global";
 
+import SpeedMeter from "./SpeedMeter";
+
 // interface SlideResult {
 //     countPercentage: number,
 //     elapsedTime: number
@@ -66,6 +68,7 @@ const Presentation: FC = () => {
                 <Button onClick={startHandle}>スタート</Button>
                 <button onClick={slideHandle}>スライドめくる</button>
                 <Button onClick={stopHandle}>ストップ</Button>
+                <SpeedMeter />
             </Center>
         </>
     )
