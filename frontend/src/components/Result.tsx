@@ -1,9 +1,11 @@
-import type {FC} from "react";
+import {FC} from "react";
 import {useLocation} from "react-router-dom";
 import {SlideResult} from "../global";
-import {RadarChart} from '@mantine/charts';
-import {BarChart} from '@mantine/charts';
 
+import OneBarChart from "./OneBarChart.tsx";
+
+import {RadarChart} from '@mantine/charts';
+import {NavLink} from "@mantine/core";
 // const sampleResult = [{countPercentage: 80, speed: 50, positive: 50}, {
 //     countPercentage: 60,
 //     speed: 50,
@@ -13,14 +15,21 @@ import {BarChart} from '@mantine/charts';
 const Result: FC = () => {
     const location = useLocation();
     console.log(location)
-    const data = useLocation().state.map((obj: SlideResult, idx: number)=> ({page: idx + 1, eyeScore:obj.countPercentage}))
+    // const eyeSlideScore:Props = {graphTitle: "目線がカメラを向いているか",data: useLocation().state.map((obj: SlideResult, idx: number) => ({
+    //         page: "slide " + (idx + 1),
+    //         score: obj.countPercentage
+    //     }))}
+    const data: Record<string, any>[] = useLocation().state.map((obj: SlideResult, idx: number) => ({
+        slide: "slide " + (idx + 1),
+        score: obj.countPercentage
+    }))
 
     const countPages = location.state.length;
     console.log(countPages);
 
-    const totalEye = location.state.map((obj: SlideResult)=> {
+    const totalEye = location.state.map((obj: SlideResult) => {
         return obj.countPercentage
-    }).reduce((acc: number, cur:number) => acc + cur, 0)
+    }).reduce((acc: number, cur: number) => acc + cur, 0)
     console.log(totalEye)
 
     const eyeScore = Math.floor(totalEye / countPages);
@@ -36,7 +45,6 @@ const Result: FC = () => {
         threshold: 80
     }, {product: '繋ぎ言葉', score: 100, threshold: 80}]
 
-
     return (
         <>
             <h1>Resultページです</h1>
@@ -51,25 +59,9 @@ const Result: FC = () => {
                         withPolarGrid
                         withPolarAngleAxis
             />
-            <BarChart
-                h={250}
-                w={700}
-                data={data}
-                dataKey="page"
-                type="stacked"
-                withLegend
-                referenceLines={[
-                    {
-                        y: 80,
-                        color: 'red.5',
-                        labelPosition: 'insideTopRight',
-                    },
-                ]}
-                legendProps={{verticalAlign: 'bottom'}}
-                series={[
-                    {name: 'eyeScore', label: '目線がカメラを向いているか', color: 'blue.4'},
-                ]}
-            />
+            <NavLink label="結果の詳細を表示" defaultOpened>
+                <OneBarChart key="eye" graphTitle="目線がカメラを向いているか" slideScore={data}/>
+            </NavLink>
         </>
     )
 }
