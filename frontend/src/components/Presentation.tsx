@@ -49,7 +49,8 @@ const Presentation: FC = () => {
     const slideHandle = () => {
         countPercentage.current = Math.floor((countVariable.current * 100) / countAll.current);
         elapsedTime.current = Number(new Date()) - slideStartTime.current;
-        arrSlideResult.push({countPercentage: countPercentage.current, elapsedTime: elapsedTime.current, countFastSpeed: countFastSpeed.current})
+        // Math.floor((countAll.current - countFastSpeed.current) * 100/ countAll.current)
+        arrSlideResult.push({countPercentage: countPercentage.current, elapsedTime: elapsedTime.current, countFastSpeed:  Math.floor((countAll.current - countFastSpeed.current) * 100/ countAll.current)})
         // console.log("countPercentage :", countPercentage.current)
         // console.log("elapsedTime :", elapsedTime.current)
         startHandle();
