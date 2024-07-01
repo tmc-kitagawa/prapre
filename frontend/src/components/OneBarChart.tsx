@@ -24,6 +24,7 @@ const OneBarChart = (props:Props) => {
                     dataKey="slide"
                     // type="stacked"
                     // withLegend
+                    yAxisProps={{ domain: [0, 100] }}
                     referenceLines={[
                         {
                             y: 80,
