@@ -2,9 +2,10 @@ import {FC, MutableRefObject, useEffect, useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {Button, Center} from '@mantine/core';
 import "./Presentation.scss"
+import {startbutton, sr} from "../../public/speed_meter_script"
 import { SlideResult } from "../global";
 
-import SpeedMeter from "./SpeedMeter";
+// import SpeedMeter from "./SpeedMeter";
 
 // interface SlideResult {
 //     countPercentage: number,
@@ -14,6 +15,7 @@ import SpeedMeter from "./SpeedMeter";
 const Presentation: FC = () => {
     const navigate = useNavigate();
 
+    let countFastSpeed: MutableRefObject<number> = useRef(0)
     let countVariable: MutableRefObject<number> = useRef(0);
     let countAll: MutableRefObject<number> = useRef(0);
     let slideStartTime: MutableRefObject<number> = useRef(0)
@@ -27,8 +29,11 @@ const Presentation: FC = () => {
             .setGazeListener((data: any) => {
                 data.y < 300 && ++countVariable.current;
                 ++countAll.current;
-                console.log("countVariable : ", countVariable)
-                console.log("countAll      : ", countAll)
+                // console.log("countVariable : ", countVariable)
+                // console.log("countAll      : ", countAll)
+                // console.log(sr);
+                sr > 4 && ++countFastSpeed.current;
+                // console.log(countFastSpeed.current)
             })
             .begin();
     }, [])
@@ -36,13 +41,15 @@ const Presentation: FC = () => {
     const startHandle = () => {
         countVariable.current = 0;
         countAll.current = 0;
-        slideStartTime.current = Number(new Date())
+        countFastSpeed.current = 0;
+        slideStartTime.current = Number(new Date());
+        startbutton()
     }
 
     const slideHandle = () => {
         countPercentage.current = Math.floor((countVariable.current * 100) / countAll.current);
         elapsedTime.current = Number(new Date()) - slideStartTime.current;
-        arrSlideResult.push({countPercentage: countPercentage.current, elapsedTime: elapsedTime.current})
+        arrSlideResult.push({countPercentage: countPercentage.current, elapsedTime: elapsedTime.current, countFastSpeed: countFastSpeed.current})
         // console.log("countPercentage :", countPercentage.current)
         // console.log("elapsedTime :", elapsedTime.current)
         startHandle();
@@ -56,6 +63,7 @@ const Presentation: FC = () => {
         // console.log("elapsedTime :" , elapsedTime.current)
         // const webgazer = window.webgazer;
         webgazer.end();
+        // location.reload();
         console.log(arrSlideResult);
         navigate("/result", {state: arrSlideResult})
     }
@@ -68,7 +76,9 @@ const Presentation: FC = () => {
                 <Button onClick={startHandle}>スタート</Button>
                 <button onClick={slideHandle}>スライドめくる</button>
                 <Button onClick={stopHandle}>ストップ</Button>
-                <SpeedMeter />
+                {/*<SpeedMeter/>*/}
+                {/*<canvas id="canvas"></canvas>*/}
+                <canvas id="myChart"></canvas>
             </Center>
         </>
     )

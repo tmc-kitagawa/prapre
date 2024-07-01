@@ -2,7 +2,8 @@ import exp = require("node:constants");
 
 export interface SlideResult {
     countPercentage: number,
-    elapsedTime: number
+    elapsedTime: number,
+    countFastSpeed: number
 }
 
 // export interface SlideScore {

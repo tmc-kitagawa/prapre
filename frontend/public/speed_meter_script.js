@@ -1,15 +1,33 @@
 // import "https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        // integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        // crossOrigin="anonymous"
-import "https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        // integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        // crossOrigin="anonymous"
-import "https://obniz.io/js/jquery-3.2.1.min.js"
-import "https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"
-import "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"
-import "https://cdn.jsdelivr.net/npm/moment@2.24.0/min/moment.min.js"
-import "https://cdn.jsdelivr.net/npm/chart.js@2.8.0"
-import "https://cdn.jsdelivr.net/npm/chartjs-plugin-streaming@1.8.0"
+// with {
+//         integrity:"sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n",
+//         // crossOrigin:"anonymous"
+//         }
+// import "https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+// with {
+//         integrity:"sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo",
+//         // crossOrigin:"anonymous"
+//         }
+// import "https://obniz.io/js/jquery-3.2.1.min.js"
+// import "../public/jquery-3.2.1.min.js"
+// import "./popper.min.js"
+//
+// import  "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+// with {
+// integrity : "sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6",
+// crossorigin : "anonymous"
+// > < /script>    <script src="https:/
+//         }
+// /obniz.io/
+// js / jquery - 3.2
+// .1.min.js
+// "></script>
+
+// import "https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"
+// import "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"
+// import "https://cdn.jsdelivr.net/npm/moment@2.24.0/min/moment.min.js"
+// import "https://cdn.jsdelivr.net/npm/chart.js@2.8.0"
+// import "https://cdn.jsdelivr.net/npm/chartjs-plugin-streaming@1.8.0"
 import exp from "node:constants";
 
 export function changeValue(value) {
@@ -57,10 +75,15 @@ let alerting = false;
 
 // キャンバス
 let canvas = document.getElementById('canvas');
-let canvasContext = canvas.getContext('2d');
+let canvasContext = canvas?.getContext('2d');
 
 // 音声解析
 let audioAnalyser = null;
+
+$("#clear-button").click(function clear() {
+    location.reload();
+});
+
 //-----------------------
 // start button event
 //-----------------------
@@ -140,6 +163,7 @@ export function enqueue(n) {
         que.shift();
     }
 }
+
 export function average() {
     if (que.length == 0) return 0.0;
     let a = 0.0;
@@ -159,6 +183,7 @@ export function enqueue_cb(n) {
         que_cb.shift();
     }
 }
+
 export function average_cb() {
     if (que_cb.length == 0) return 0.0;
     let a = 0.0;
@@ -188,7 +213,7 @@ export async function predict(tensor) {
     $("#console").empty();
     $("#console2").empty();
     $("#console").append(`${Math.round(sr * 10) / 10}`);
-    console.log(Math.round(sr * 10) / 10)
+    // console.log(Math.round(sr * 10) / 10)
     $("#console2").append(`${Math.round(average() * 10) / 10}`);
     if (average() >= fireCount) {
         onfire();
@@ -243,7 +268,8 @@ export async function predict_cb(tensor) {
 
 let counter = 0;
 let counter_cb = 0;
-export function get_fft (dat) {
+
+export function get_fft(dat) {
     const fft_cb = tf.tidy(() => {
         let offset = tf.scalar(divOffset_cb);
         let fft = tf.signal.stft(tf.tensor1d(dat), fft_frames_cb, bufferSize_cb).abs().div(offset).flatten().slice(0, fftSize_cb);
@@ -284,9 +310,11 @@ let audio = {};
 // let acontext;// = new AudioContext();
 let mediaStream;
 
+let recordingFlg = false;
+
 export function startWebcam() {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();//new AudioContext();
-    let recordingFlg = true;
+    recordingFlg = true;
     console.log("mic start.");
 // 	$("#console2").html(`mic start.`);
     $("#warning").empty();
@@ -318,7 +346,7 @@ export function startWebcam() {
 // 		}
 // 	}
 
-    navigator.mediaDevices = navigator.mediaDevices || ((navigator.mozGetUserMedia || navigator.webkitGetUserMedia) ? {
+    navigator.mediaDevices_ = navigator.mediaDevices_ || ((navigator.mozGetUserMedia || navigator.webkitGetUserMedia) ? {
         getUserMedia: function (c) {
             return new Promise(function (y, n) {
                 (navigator.mozGetUserMedia ||
@@ -327,13 +355,13 @@ export function startWebcam() {
         }
     } : null);
 
-    if (!navigator.mediaDevices) {
+    if (!navigator.mediaDevices_) {
         alert("getUserMedia() not supported.");
         console.log("getUserMedia() not supported.");
         return;
     }
 
-    navigator.mediaDevices.getUserMedia({audio: true, video: false})
+    navigator.mediaDevices_.getUserMedia({audio: true, video: false})
         .then(function (stream) {
             // 録音関連
             localMediaStream = stream;
@@ -387,18 +415,18 @@ export function analyseVoice() {
     let fsDivN = audioContext.sampleRate / 2 / audioAnalyser.fftSize;
     let spectrums = new Uint8Array(audioAnalyser.frequencyBinCount);
     audioAnalyser.getByteFrequencyData(spectrums);
-    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+    // canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 
-    canvasContext.beginPath();
+    // canvasContext.beginPath();
 
     for (let i = 0, len = spectrums.length; i < len; i++) {
         //canvasにおさまるように線を描画
-        let x = (i / len) * canvas.width;
-        let y = (1 - (spectrums[i] / 255)) * canvas.height;
+        // let x = (i / len) * canvas.width;
+        // let y = (1 - (spectrums[i] / 255)) * canvas.height;
         if (i === 0) {
-            canvasContext.moveTo(x, y);
+            // canvasContext.moveTo(x, y);
         } else {
-            canvasContext.lineTo(x, y);
+            // canvasContext.lineTo(x, y);
         }
 //         let f = Math.floor(i * fsDivN);  // index -> frequency;
 //         // 500 Hz単位にy軸の線とラベル出力
@@ -411,7 +439,7 @@ export function analyseVoice() {
 //         }
     }
 
-    canvasContext.stroke();
+    // canvasContext.stroke();
 
 //     // x軸の線とラベル出力
 //     let textYs = ['1.00', '0.50', '0.00'];
@@ -536,3 +564,5 @@ $("#webhookbutton").click(function () {
     $('#webhookurl').prop('disabled', true);
     $('#webhookbutton').prop('disabled', true);
 });
+
+export {sr};
