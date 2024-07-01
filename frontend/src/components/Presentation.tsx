@@ -10,6 +10,7 @@ import PdfViewer from "./PdfViewer";
 import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
+import {Record} from "./Record.tsx";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -95,6 +96,7 @@ const Presentation: FC<Props> = ({pdfFile}) => {
                 <canvas id="myChart"></canvas>
             </Center>
             <PdfViewer file={pdfFile} />
+            <Record/>
         </>
     )
 }
