@@ -6,6 +6,8 @@ import Presentation from "./components/Presentation";
 import Result from "./components/Result";
 import {MantineProvider} from "@mantine/core";
 import "@mantine/core/styles.css";
+import '@mantine/dropzone/styles.css';
+import {useEffect, useState} from "react";
 
 interface Presentation {
     id: number;
@@ -15,10 +17,16 @@ interface Presentation {
 }
 
 const App = () => {
+    const [pdfFile, setPdfFile] = useState<any>(null)
+
+    useEffect(() => {
+        console.log(pdfFile)
+    }, [pdfFile])
 
     axios("/api/presentations")
         .then((res: AxiosResponse<Presentation[]>) =>
             console.log(res.data)
+
         )
         .catch((e: AxiosError<{ error: string }>) => {
             console.log(e.message);
@@ -27,9 +35,9 @@ const App = () => {
     return (
         <MantineProvider>
             <Routes>
-                <Route path="/" element={<Home/>}/>
-                <Route path="calibration" element={<Calibration/>}/>
-                <Route path="presentation" element={<Presentation/>}/>
+                <Route path="/" element={<Home setPdfFile={setPdfFile}/>}/>
+                <Route path="calibration" element={<Calibration />}/>
+                <Route path="presentation" element={<Presentation pdfFile={pdfFile}/>}/>
                 <Route path="result" element={<Result/>}/>
                 {/*<Route path="/history" element={<History />} />*/}
             </Routes>

@@ -1,20 +1,25 @@
-import {FC} from "react";
+import {Dispatch, FC, SetStateAction} from "react";
 
 ``
 import {useRef} from 'react';
 import {ActionIcon, rem} from '@mantine/core';
 import {TimeInput} from '@mantine/dates';
 import {IconClock} from '@tabler/icons-react';
-import {Button, Group, TextInput} from '@mantine/core';
+import {Button, Group} from '@mantine/core';
 import {useForm} from '@mantine/form';
 import {useNavigate} from "react-router-dom";
+import {PdfDropzone} from "../components/PdfDropzone"
 
 interface Values {
     time: string;
-    code: string;
+    // code: string;
 }
 
-const Home: FC = () => {
+interface Props {
+    setPdfFile:  Dispatch<SetStateAction<File | null |  string>>
+}
+
+const Home: FC<Props> = ({setPdfFile}) => {
     const ref = useRef<HTMLInputElement>(null);
     const navigate = useNavigate()
     const pickerControl = (
@@ -27,18 +32,22 @@ const Home: FC = () => {
         mode: 'uncontrolled',
         initialValues: {
             time: '03:00',
-            code: '',
+            // code: '',
             // termsOfService: false,
         },
-
         validate: {
             time: (value) => (value.length !== 0 ? null : '時間を入力してください'),
-            code: (value) => (value.length !== 0 ? null : '埋め込みコードを入力してください'),
+            // code: (value) => (value.length !== 0 ? null : '埋め込みコードを入力してください'),
         },
     });
 
     const submitHandler = (values: Values) => {
-       navigate('/calibration', {state: {time: values.time , code: values.code}})
+        navigate('/calibration', {
+            state: {
+                time: values.time,
+                // code: values.code,
+            }
+        })
     }
 
     return (
@@ -56,13 +65,14 @@ const Home: FC = () => {
                             label="アイコンをクリックして時間を入力してください" ref={ref}
                             rightSection={pickerControl} key={form.key('time')}
                             {...form.getInputProps('time')}/>
-                        <TextInput
-                            withAsterisk
-                            label="埋め込みコード"
-                            placeholder="埋め込みコードを入力"
-                            key={form.key('code')}
-                            {...form.getInputProps('code')}
-                        />
+                        {/*<TextInput*/}
+                        {/*    withAsterisk*/}
+                        {/*    label="埋め込みコード"*/}
+                        {/*    placeholder="埋め込みコードを入力"*/}
+                        {/*    key={form.key('code')}*/}
+                        {/*    {...form.getInputProps('code')}*/}
+                        {/*/>*/}
+                        <PdfDropzone setPdfFile={setPdfFile}/>
                         <Group justify="flex-end" mt="md">
                             <Button type="submit">Submit</Button>
                         </Group>

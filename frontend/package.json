@@ -13,6 +13,7 @@
     "@mantine/charts": "^7.11.0",
     "@mantine/core": "^7.11.0",
     "@mantine/dates": "^7.11.0",
+    "@mantine/dropzone": "^7.11.0",
     "@mantine/form": "^7.11.0",
     "@mantine/hooks": "^7.11.0",
     "@tabler/icons-react": "^3.6.0",
@@ -23,6 +24,7 @@
     "path": "^0.12.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-pdf": "^9.0.0",
     "react-router-dom": "^6.23.1",
     "sweetalert": "^2.1.2"
   },

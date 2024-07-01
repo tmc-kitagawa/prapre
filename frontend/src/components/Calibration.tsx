@@ -1,7 +1,7 @@
 import {FC, useEffect} from "react";
 import "./Calibration.scss";
 import {Restart} from "../utils/main"
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {docLoad} from "../utils/calibration";
 
 declare global {
@@ -11,9 +11,10 @@ declare global {
 }
 
 const Calibration: FC = () => {
-const location = useLocation();
+    const location = useLocation();
+    const navigate = useNavigate()
     useEffect(() => {
-        docLoad();
+        docLoad(navigate);
         const webgazer = window.webgazer;
 
         webgazer.setRegression('ridge') /* currently must set regression and tracker */
@@ -121,7 +122,7 @@ const location = useLocation();
 
             <div>
                 <p>{location.state.time}</p>
-                <p>{location.state.code}</p>
+                {/*<p>{location.state.code}</p>*/}
             </div>
         </>
     )
