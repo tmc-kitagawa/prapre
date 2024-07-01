@@ -24,6 +24,11 @@ const Result: FC = () => {
         score: obj.countPercentage
     }))
 
+    const dataSpeed: Record<string, any>[] = useLocation().state.map((obj: SlideResult, idx: number) => ({
+        slide: "slide " + (idx + 1),
+        score: obj.countFastSpeed
+    }))
+
     const countPages = location.state.length;
     console.log(countPages);
 
@@ -35,9 +40,17 @@ const Result: FC = () => {
     const eyeScore = Math.floor(totalEye / countPages);
     console.log(eyeScore);
 
+    const totalSpeed = location.state.map((obj: SlideResult) => {
+        return obj.countFastSpeed
+    }).reduce((acc: number, cur: number) => acc + cur, 0)
+    console.log(totalSpeed)
+
+    const speedScore = Math.floor(totalSpeed / countPages);
+    console.log(eyeScore);
+
     const scoreData = [{product: '目線', score: eyeScore, threshold: 80}, {
         product: '速度',
-        score: 30,
+        score: speedScore,
         threshold: 80
     }, {product: 'ハキハキ', score: 40, threshold: 80}, {
         product: '時間',
@@ -61,6 +74,7 @@ const Result: FC = () => {
             />
             <NavLink label="結果の詳細を表示" defaultOpened>
                 <OneBarChart key="eye" graphTitle="目線がカメラを向いているか" slideScore={data}/>
+                <OneBarChart key="speed" graphTitle="話す速度" slideScore={dataSpeed}/>
             </NavLink>
         </>
     )
