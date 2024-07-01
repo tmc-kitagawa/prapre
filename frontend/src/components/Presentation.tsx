@@ -5,14 +5,27 @@ import "./Presentation.scss"
 import {startbutton, sr} from "../../public/speed_meter_script"
 import { SlideResult } from "../global";
 
-// import SpeedMeter from "./SpeedMeter";
+
+import PdfViewer from "./PdfViewer";
+import { pdfjs } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.mjs',
+    import.meta.url
+).toString();
 
 // interface SlideResult {
 //     countPercentage: number,
 //     elapsedTime: number
 // }
 
-const Presentation: FC = () => {
+interface Props {
+    pdfFile:  File;
+}
+
+const Presentation: FC<Props> = ({pdfFile}) => {
     const navigate = useNavigate();
 
     let countFastSpeed: MutableRefObject<number> = useRef(0)
@@ -81,6 +94,7 @@ const Presentation: FC = () => {
                 {/*<canvas id="canvas"></canvas>*/}
                 <canvas id="myChart"></canvas>
             </Center>
+            <PdfViewer file={pdfFile} />
         </>
     )
 }
