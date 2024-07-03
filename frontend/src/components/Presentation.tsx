@@ -1,13 +1,13 @@
-import {FC, MutableRefObject, useEffect, useRef} from "react";
+import {FC, MutableRefObject, useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Center} from '@mantine/core';
+import {Button, Center, Flex} from '@mantine/core';
 import "./Presentation.scss"
 import {startbutton, sr} from "../utils/speed_meter_script"
-import { SlideResult } from "../global";
+import {SlideResult} from "../global";
 
 
 import PdfViewer from "./PdfViewer";
-import { pdfjs } from 'react-pdf';
+import {pdfjs} from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 
@@ -22,11 +22,13 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 // }
 
 interface Props {
-    pdfFile:  File;
+    pdfFile: File;
+    presentationTime: string;
 }
 
-const Presentation: FC<Props> = ({pdfFile}) => {
+const Presentation: FC<Props> = ({pdfFile, presentationTime}) => {
     const navigate = useNavigate();
+    const [started, setStarted] = useState(false)
 
     let countFastSpeed: MutableRefObject<number> = useRef(0)
     let countVariable: MutableRefObject<number> = useRef(0);
@@ -49,6 +51,7 @@ const Presentation: FC<Props> = ({pdfFile}) => {
                 // console.log(countFastSpeed.current)
             })
             .begin();
+        startbutton()
     }, [])
 
     const startHandle = () => {
@@ -56,14 +59,19 @@ const Presentation: FC<Props> = ({pdfFile}) => {
         countAll.current = 0;
         countFastSpeed.current = 0;
         slideStartTime.current = Number(new Date());
-        startbutton()
+        // startbutton()
+        setStarted(true)
     }
 
     const slideHandle = () => {
         countPercentage.current = Math.floor((countVariable.current * 100) / countAll.current);
         elapsedTime.current = Number(new Date()) - slideStartTime.current;
         // Math.floor((countAll.current - countFastSpeed.current) * 100/ countAll.current)
-        arrSlideResult.push({countPercentage: countPercentage.current, elapsedTime: elapsedTime.current, countFastSpeed:  Math.floor((countAll.current - countFastSpeed.current) * 100/ countAll.current)})
+        arrSlideResult.push({
+            countPercentage: countPercentage.current,
+            elapsedTime: elapsedTime.current,
+            countFastSpeed: Math.floor((countAll.current - countFastSpeed.current) * 100 / countAll.current)
+        })
         // console.log("countPercentage :", countPercentage.current)
         // console.log("elapsedTime :", elapsedTime.current)
         // startHandle();
@@ -91,16 +99,19 @@ const Presentation: FC<Props> = ({pdfFile}) => {
 
     return (
         <>
-            <Center>
-                <h1>Presentationページです</h1>
-                <Button onClick={startHandle}>スタート</Button>
-                <button onClick={slideHandle}>スライドめくる</button>
-                <Button onClick={stopHandle}>ストップ</Button>
+            <Flex justify="flex-end">
+                {started? (<Button onClick={stopHandle}>ストップ</Button>) : (<Button onClick={startHandle}>スタート</Button>)}
+                <p>{presentationTime}</p>
                 {/*<SpeedMeter/>*/}
                 {/*<canvas id="canvas"></canvas>*/}
-                <canvas id="myChart"></canvas>
+
+                <div className='chart-container'>
+                    <canvas id="myChart"></canvas>
+                </div>
+            </Flex>
+            <Center>
+                <PdfViewer file={pdfFile} slideHandle={slideHandle} started={started}/>
             </Center>
-            <PdfViewer file={pdfFile} />
         </>
     )
 }

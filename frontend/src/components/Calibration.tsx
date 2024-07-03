@@ -1,7 +1,7 @@
 import {FC, useEffect} from "react";
 import "./Calibration.scss";
 import {Restart} from "../utils/main"
-import {useLocation, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {docLoad} from "../utils/calibration";
 
 declare global {
@@ -11,7 +11,6 @@ declare global {
 }
 
 const Calibration: FC = () => {
-    const location = useLocation();
     const navigate = useNavigate()
     useEffect(() => {
         docLoad(navigate);
@@ -109,19 +108,6 @@ const Calibration: FC = () => {
                     </div>
 
                 </div>
-            </div>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-
-            <div>
-                <p>{location.state.time}</p>
-                {/*<p>{location.state.code}</p>*/}
             </div>
         </>
     )

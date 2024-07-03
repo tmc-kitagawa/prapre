@@ -470,10 +470,10 @@ export function onRefresh(chart) {
         x: Date.now(),
         y: sr
     });
-    chart.config.data.datasets[1].data.push({
-        x: Date.now(),
-        y: average()
-    });
+    // chart.config.data.datasets[1].data.push({
+    //     x: Date.now(),
+    //     y: average()
+    // });
     chart.config.data.datasets[2].data.push({
         x: Date.now(),
         y: fireCount
@@ -493,9 +493,9 @@ let config = {
             cubicInterpolationMode: 'monotone',
             data: []
         }, {
-            label: '平均値',
-            backgroundColor: color(chartColors.green).alpha(0.5).rgbString(),
-            borderColor: chartColors.green,
+            label: '',//平均値
+            backgroundColor: color(chartColors.green).alpha(0).rgbString(),
+            borderColor: 'rgb(255,255,255)',
             fill: false,
             cubicInterpolationMode: 'monotone',
             data: []
@@ -537,7 +537,8 @@ let config = {
         hover: {
             mode: 'nearest',
             intersect: false
-        }
+        },
+        maintainAspectRatio: false
     }
 };
 

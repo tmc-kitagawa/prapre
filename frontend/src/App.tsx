@@ -18,6 +18,7 @@ interface Presentation {
 
 const App = () => {
     const [pdfFile, setPdfFile] = useState<any>(null)
+    const [presentationTime, setPresentationTime] = useState("")
 
     useEffect(() => {
         console.log(pdfFile)
@@ -35,9 +36,9 @@ const App = () => {
     return (
         <MantineProvider>
             <Routes>
-                <Route path="/" element={<Home setPdfFile={setPdfFile}/>}/>
+                <Route path="/" element={<Home setPdfFile={setPdfFile} setPresentationTime={setPresentationTime}/>}/>
                 <Route path="calibration" element={<Calibration />}/>
-                <Route path="presentation" element={<Presentation pdfFile={pdfFile}/>}/>
+                <Route path="presentation" element={<Presentation pdfFile={pdfFile} presentationTime={presentationTime}/>}/>
                 <Route path="result" element={<Result/>}/>
                 {/*<Route path="/history" element={<History />} />*/}
             </Routes>
