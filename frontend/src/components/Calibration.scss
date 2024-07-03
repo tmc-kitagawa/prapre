@@ -24,6 +24,7 @@ button {
 
 /* Navbar styling */
 #webgazerNavbar {
+  display: none;
   left: 320px;
   width: calc(100% - 320px);
   z-index: 0;
@@ -40,6 +41,7 @@ button {
   padding-right: 40px;
 }
 #Accuracy {
+  display: none;
   background-color: #222;
   padding-left: inherit;
 }

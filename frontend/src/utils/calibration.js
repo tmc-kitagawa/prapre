@@ -63,7 +63,7 @@ function calcAccuracy(navigate) {
                 var accuracyLabel = "<a>Accuracy | "+precision_measurement+"%</a>";
                 document.getElementById("Accuracy").innerHTML = accuracyLabel; // Show the accuracy in the nav bar.
                 swal({
-                    title: "アイトラッキングの準備が整いました。 " + precision_measurement + "%",
+                    title: "アイトラッキングの準備が整いました。",
                     allowOutsideClick: false,
                     buttons: {
                         cancel: "Recalibrate",
@@ -73,6 +73,7 @@ function calcAccuracy(navigate) {
                         if (isConfirm){
                             //clear the calibration & hide the last middle button
                             ClearCanvas();
+                            webgazer.end();
                             navigate("/presentation")
                         } else {
                             //use restart function to restart the calibration
@@ -178,8 +179,33 @@ function sleep (time) {
 }
 
 export const docLoad = (navigate)=>{
+    // document.querySelectorAll('.Calibration').forEach((i) => {
+    //     i.addEventListener('click', () => {
+    //         calPointClick(i, navigate);
+    //     })
+    // })
+
+    // ClearCanvas();
+    // swal({
+    //     title:"アイトラッキングの準備をします",
+    //     text: "黄色になるまで赤い丸をクリックしてね！！全部で9個あるよ",
+    //     buttons:{
+    //         cancel: false,
+    //         confirm: true
+    //     }
+    // }).then(isConfirm => {
+    //
+    //     ShowCalibrationPoint();
+    // });
+
+
     ClearCanvas();
-    helpModalShow();
+    // helpModalShow();
+
+    document.getElementById("Accuracy").innerHTML = "<a>Not yet Calibrated</a>";
+    webgazer.clearData();
+    ClearCalibration();
+    PopUpInstruction();
 
     // click event on the calibration buttons
     document.querySelectorAll('.Calibration').forEach((i) => {
@@ -193,12 +219,13 @@ export const PopUpInstruction = () =>{
     ClearCanvas();
     swal({
         title:"アイトラッキングの準備をします",
-        text: "黄色になるまで赤い丸をクリックしてね！！全部で9個あるよ",
+        text: "黄色になるまで赤い丸をクリックしてね！全部で9個あるよ",
         buttons:{
             cancel: false,
             confirm: true
         }
     }).then(isConfirm => {
+
         ShowCalibrationPoint();
     });
 

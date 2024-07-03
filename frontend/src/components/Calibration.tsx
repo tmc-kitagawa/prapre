@@ -25,9 +25,9 @@ const Calibration: FC = () => {
             })
             .saveDataAcrossSessions(true)
             .begin();
-        webgazer.showVideoPreview(true) /* shows all video previews */
-            .showPredictionPoints(true) /* shows a square every 100 milliseconds where current prediction is */
-            .applyKalmanFilter(true); /* Kalman Filter defaults to on. Can be toggled by user. */
+        // webgazer.showVideoPreview(true) /* shows all video previews */
+        //     .showPredictionPoints(true) /* shows a square every 100 milliseconds where current prediction is */
+        //     .applyKalmanFilter(true); /* Kalman Filter defaults to on. Can be toggled by user. */
 
         //Set up the webgazer video feedback.
         var setup = function() {
@@ -56,7 +56,6 @@ const Calibration: FC = () => {
             {/*<script src="../utils/resize_canvas.js" defer></script>*/}
             {/*<script src="../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" defer></script>*/}
 
-            <h1>Calibrationページです</h1>
             <nav id="webgazerNavbar" className="navbar navbar-expand-lg navbar-default navbar-fixed-top">
                 <div className="container-fluid">
                     <div className="navbar-header">

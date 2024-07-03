@@ -2,7 +2,7 @@ import {FC, MutableRefObject, useEffect, useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {Button, Center} from '@mantine/core';
 import "./Presentation.scss"
-import {startbutton, sr} from "../../public/speed_meter_script"
+import {startbutton, sr} from "../utils/speed_meter_script"
 import { SlideResult } from "../global";
 
 
@@ -66,7 +66,12 @@ const Presentation: FC<Props> = ({pdfFile}) => {
         arrSlideResult.push({countPercentage: countPercentage.current, elapsedTime: elapsedTime.current, countFastSpeed:  Math.floor((countAll.current - countFastSpeed.current) * 100/ countAll.current)})
         // console.log("countPercentage :", countPercentage.current)
         // console.log("elapsedTime :", elapsedTime.current)
-        startHandle();
+        // startHandle();
+
+        countVariable.current = 0;
+        countAll.current = 0;
+        countFastSpeed.current = 0;
+        slideStartTime.current = Number(new Date());
     }
 
     const stopHandle = () => {
@@ -76,6 +81,7 @@ const Presentation: FC<Props> = ({pdfFile}) => {
         // console.log("countPercentage :" , countPercentage.current)
         // console.log("elapsedTime :" , elapsedTime.current)
         // const webgazer = window.webgazer;
+        webgazer.pause()
         webgazer.end();
         // location.reload();
         console.log(arrSlideResult);
