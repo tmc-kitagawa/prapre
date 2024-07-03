@@ -5,12 +5,11 @@ import "./Presentation.scss"
 import {startbutton, sr} from "../../public/speed_meter_script"
 import { SlideResult } from "../global";
 
-
 import PdfViewer from "./PdfViewer";
 import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-import {Record} from "./Record.tsx";
+import {startAmivoice, stopAmivoice} from "../utils/Amivoice.ts";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -24,9 +23,10 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 interface Props {
     pdfFile:  File;
+    setFillers:  React.Dispatch<React.SetStateAction<number[]>>
 }
 
-const Presentation: FC<Props> = ({pdfFile}) => {
+const Presentation: FC<Props> = ({pdfFile, setFillers}) => {
     const navigate = useNavigate();
 
     let countFastSpeed: MutableRefObject<number> = useRef(0)
@@ -58,6 +58,7 @@ const Presentation: FC<Props> = ({pdfFile}) => {
         countFastSpeed.current = 0;
         slideStartTime.current = Number(new Date());
         startbutton()
+        startAmivoice()
     }
 
     const slideHandle = () => {
@@ -67,6 +68,7 @@ const Presentation: FC<Props> = ({pdfFile}) => {
         arrSlideResult.push({countPercentage: countPercentage.current, elapsedTime: elapsedTime.current, countFastSpeed:  Math.floor((countAll.current - countFastSpeed.current) * 100/ countAll.current)})
         // console.log("countPercentage :", countPercentage.current)
         // console.log("elapsedTime :", elapsedTime.current)
+        stopAmivoice(setFillers)
         startHandle();
     }
 
@@ -96,7 +98,6 @@ const Presentation: FC<Props> = ({pdfFile}) => {
                 <canvas id="myChart"></canvas>
             </Center>
             <PdfViewer file={pdfFile} />
-            <Record/>
         </>
     )
 }

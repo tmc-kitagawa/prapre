@@ -18,7 +18,7 @@ export const PdfDropzone : FC<Props> = (props) => {
                 console.log(files[0])
             }}
             onReject={(files) => console.log('rejected files', files)}
-            maxSize={5 * 1024 ** 2}
+            // maxSize={100 * 1024 ** 2}
             accept={PDF_MIME_TYPE}
             {...props}
         >

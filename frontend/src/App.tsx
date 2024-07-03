@@ -18,15 +18,15 @@ interface Presentation {
 
 const App = () => {
     const [pdfFile, setPdfFile] = useState<any>(null)
+    const [fillers, setFillers] = useState<number[]>([])
 
     useEffect(() => {
-        console.log(pdfFile)
-    }, [pdfFile])
+        console.log(fillers)
+    }, [fillers]);
 
     axios("/api/presentations")
         .then((res: AxiosResponse<Presentation[]>) =>
             console.log(res.data)
-
         )
         .catch((e: AxiosError<{ error: string }>) => {
             console.log(e.message);
@@ -37,7 +37,7 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<Home setPdfFile={setPdfFile}/>}/>
                 <Route path="calibration" element={<Calibration />}/>
-                <Route path="presentation" element={<Presentation pdfFile={pdfFile}/>}/>
+                <Route path="presentation" element={<Presentation pdfFile={pdfFile} setFillers={setFillers}/>}/>
                 <Route path="result" element={<Result/>}/>
                 {/*<Route path="/history" element={<History />} />*/}
             </Routes>
