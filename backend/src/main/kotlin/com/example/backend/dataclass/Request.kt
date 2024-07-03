@@ -1,7 +1,6 @@
 package com.example.backend.dataclass
 
-data class Presentation(
-    val id: Long,
+data class Request(
     val title: String,
     val startTime: Long,
     val userId: Long,

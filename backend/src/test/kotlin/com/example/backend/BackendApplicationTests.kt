@@ -1,6 +1,7 @@
 package com.example.backend
 
 import com.example.backend.dataclass.Presentation
+import com.example.backend.dataclass.Request
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
@@ -25,15 +26,12 @@ class BackendApplicationTests(
 
 	@Test
 	fun `GETリクエストはOKステータスを返す`(){
-		// localhost/todos に GETリクエストを発行する。
 		val response = restTemplate.getForEntity("http://localhost:$port/api/presentations", String::class.java)
-		// レスポンスのステータスコードは OK である。
 		assertThat(response.statusCode, equalTo(HttpStatus.OK))
 	}
 
 	@Test
-	fun `GETリクエストはTodoオブジェクトのリストを返す`() {
-		// localhost/todos に GETリクエストを送り、レスポンスを Todoオブジェクトの配列として解釈する。
+	fun `GETリクエストはPresentationsオブジェクトのリストを返す`() {
 		val response = restTemplate.getForEntity("http://localhost:$port/api/presentations", Array<Presentation>::class.java)
 		assertThat(response.headers.contentType, equalTo(MediaType.APPLICATION_JSON))
 		val presentations = response.body!!
@@ -42,5 +40,26 @@ class BackendApplicationTests(
 		assertThat(presentations[0].title, equalTo("firstTitle"))
 		assertThat(presentations[1].id, equalTo(2))
 		assertThat(presentations[1].title, equalTo("secondTitle"))
+	}
+
+	@Test
+	fun `POSTリクエストはステータスコード201を返す`(){
+		val request = Request("titleだよ", 1719904090394, 1, 50, 50, 50,50, 50)
+		val response = restTemplate.postForEntity("http://localhost:$port/api/histories", request, String::class.java)
+		assertThat(response.statusCode, equalTo(HttpStatus.CREATED))
+	}
+
+	@Test
+	fun `POSTリクエストはPresentationsレコードを追加される`() {
+		val beforeGetResponse = restTemplate.getForEntity("http://localhost:$port/api/presentations", Array<Presentation>::class.java)
+		val beforePresentations = beforeGetResponse.body!!.size
+
+		val postRequest = Request("titleだよ", 1719904090394, 1, 50, 50, 50,50, 50)
+		val response = restTemplate.postForEntity("http://localhost:$port/api/histories", postRequest, String::class.java)
+
+		val afterGetResponse = restTemplate.getForEntity("http://localhost:$port/api/presentations", Array<Presentation>::class.java)
+		val afterPresentations = afterGetResponse.body!!.size
+
+		assertThat(beforePresentations + 1, equalTo(afterPresentations))
 	}
 }

@@ -6,6 +6,8 @@ import OneBarChart from "./OneBarChart.tsx";
 
 import {RadarChart} from '@mantine/charts';
 import {NavLink} from "@mantine/core";
+
+import axios from "axios";
 // const sampleResult = [{countPercentage: 80, speed: 50, positive: 50}, {
 //     countPercentage: 60,
 //     speed: 50,
@@ -57,6 +59,20 @@ const Result: FC = () => {
         score: 90,
         threshold: 80
     }, {product: '繋ぎ言葉', score: 100, threshold: 80}]
+
+    // setTimeout(async () => {
+    //     const res = await axios.post("/api/histories", {
+    //         title: "prapre",
+    //         startTime: 1719904090394,
+    //         userId: 1,
+    //         scoreEye: 50,
+    //         scoreVolume: 68,
+    //         scoreFiller: 5,
+    //         scoreSpeed: 60,
+    //         scoreTime: 70
+    //     });
+    //     console.log(res);
+    // }, 5000)
 
     return (
         <>
