@@ -4,17 +4,17 @@ import { Dropzone,  PDF_MIME_TYPE } from '@mantine/dropzone';
 import {Dispatch, FC, SetStateAction} from "react";
 
 interface Props {
-    setPdfFile:  Dispatch<SetStateAction<File | null |  string>>
+    setSlide:  Dispatch<SetStateAction<File | null |  string>>
 }
 
 export const PdfDropzone : FC<Props> = (props) => {
-    const {setPdfFile} = props
+    const {setSlide} = props
 
     return (
         <>
         <Dropzone
             onDrop={(files) => {
-                setPdfFile(files[0])
+                setSlide(files[0])
                 console.log(files[0])
             }}
             onReject={(files) => console.log('rejected files', files)}

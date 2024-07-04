@@ -1,8 +1,19 @@
-import {FC, useEffect} from "react";
+import {FC, useEffect, useState, memo, MutableRefObject, useRef} from "react";
 import "./Calibration.scss";
 import {Restart} from "../utils/main"
 import {useNavigate} from "react-router-dom";
 import {docLoad} from "../utils/calibration";
+import {startbutton, sr} from "../utils/speed_meter_script"
+import {SlideResult} from "../global";
+import {startAmivoice, stopAmivoice} from "../utils/amivoice.ts";
+import {VolumeMeter} from "./VolumeMeter.tsx";
+
+import PdfViewer from "./PdfViewer";
+import {pdfjs} from 'react-pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+import {Flex, Box, Button, Group} from '@mantine/core'
+
 
 declare global {
     interface Window {
@@ -10,27 +21,49 @@ declare global {
     }
 }
 
-const Calibration: FC = () => {
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.mjs',
+    import.meta.url
+).toString();
+
+interface Props {
+    slide: File;
+    presentationTime: string;
+    setFillers: React.Dispatch<React.SetStateAction<number[]>>
+}
+
+const Calibration = memo<Props>(({slide, presentationTime, setFillers}) => {
     const navigate = useNavigate()
+    const [calibrated, setCalibrated] = useState(false)
+    const [started, setStarted] = useState(false)
+    const [arrSlideResult, setArrSlideResult] = useState<SlideResult[]>([])
+
+    let countFastSpeed: MutableRefObject<number> = useRef(0)
+    let countVariable: MutableRefObject<number> = useRef(0);
+    let countAll: MutableRefObject<number> = useRef(0);
+    let slideStartTime: MutableRefObject<number> = useRef(0)
+    let countPercentage: MutableRefObject<number> = useRef(0)
+    let elapsedTime: MutableRefObject<number> = useRef(0)
+
+    const webgazer = window.webgazer;
+
     useEffect(() => {
-        docLoad(navigate);
-        const webgazer = window.webgazer;
+        docLoad(setCalibrated);
+
 
         webgazer.setRegression('ridge') /* currently must set regression and tracker */
-            //.setTracker('clmtrackr')
-            .setGazeListener(function(data: any, clock: any) {
-                  console.log(data); /* data is an object containing an x and y key which are the x and y prediction coordinates (no bounds limiting) */
-                  console.log(clock); /* elapsed time in milliseconds since webgazer.begin() was called */
+            .setGazeListener(function (data: any) {
+                if (data) {
+                    data.y < 300 && ++countVariable.current;
+                    ++countAll.current;
+                    sr > 4 && ++countFastSpeed.current;
+                }
             })
             .saveDataAcrossSessions(true)
             .begin();
-        // webgazer.showVideoPreview(true) /* shows all video previews */
-        //     .showPredictionPoints(true) /* shows a square every 100 milliseconds where current prediction is */
-        //     .applyKalmanFilter(true); /* Kalman Filter defaults to on. Can be toggled by user. */
 
         //Set up the webgazer video feedback.
-        var setup = function() {
-
+        var setup = function () {
             //Set up the main canvas. The main canvas is used to calibrate the webgazer.
             var canvas: any = document.getElementById("plotting_canvas");
             canvas.width = window.innerWidth;
@@ -38,23 +71,70 @@ const Calibration: FC = () => {
             canvas.style.position = 'fixed';
         };
         setup();
-
     }, [])
+
+    useEffect(() => {
+        if (calibrated) {
+            startbutton()
+        }
+    }, [calibrated]);
+
+    useEffect(() => {
+        if (started) {
+            countVariable.current = 0;
+            countAll.current = 0;
+            countFastSpeed.current = 0;
+            slideStartTime.current = Number(new Date());
+            startAmivoice()
+
+            window.addEventListener('keydown', () => {
+                console.log("keydown")
+            })
+        }
+
+    }, [started]);
+
+    const slideHandle = () => {
+        countPercentage.current = Math.floor((countVariable.current * 100) / countAll.current);
+        elapsedTime.current = Number(new Date()) - slideStartTime.current;
+        const resultObj = {
+            countPercentage: countPercentage.current,
+            elapsedTime: elapsedTime.current,
+            countFastSpeed: Math.floor((countAll.current - countFastSpeed.current) * 100 / countAll.current)
+        }
+        setArrSlideResult(prev => [...prev, resultObj])
+        stopAmivoice(setFillers)
+        startAmivoice()
+
+        countVariable.current = 0;
+        countAll.current = 0;
+        countFastSpeed.current = 0;
+        slideStartTime.current = Number(new Date());
+    }
+
+    const stopHandle = () => {
+        countPercentage.current = Math.floor((countVariable.current * 100) / countAll.current);
+        elapsedTime.current = Number(new Date()) - slideStartTime.current;
+        stopAmivoice(setFillers)
+
+        webgazer.pause()
+        webgazer.end()
+
+        console.log(arrSlideResult);
+        navigate("/result", {
+            state: [...arrSlideResult,
+                {
+                    countPercentage: countPercentage.current,
+                    elapsedTime: elapsedTime.current,
+                    countFastSpeed: Math.floor((countAll.current - countFastSpeed.current) * 100 / countAll.current)
+                }
+            ]
+        })
+    }
 
     return (
         <>
             <canvas id="plotting_canvas" width="500" height="500" style={{cursor: "crosshair"}}></canvas>
-
-            {/*<script src="../../node_modules/sweetalert/dist/sweetalert.min.js" defer></script>*/}
-
-            {/*<script src="../utils/main.js" defer></script>*/}
-            {/*<script src="../utils/calibration.js" defer></script>*/}
-            {/*<script src="../utils/precision_calculation.js" defer></script>*/}
-            {/*<script src="../utils/precision_store_points.js" defer></script>*/}
-
-            {/*<script src="../utils/resize_canvas.js" defer></script>*/}
-            {/*<script src="../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" defer></script>*/}
-
             <nav id="webgazerNavbar" className="navbar navbar-expand-lg navbar-default navbar-fixed-top">
                 <div className="container-fluid">
                     <div className="navbar-header">
@@ -109,8 +189,34 @@ const Calibration: FC = () => {
 
                 </div>
             </div>
+            {calibrated ?
+                <>
+                    <Flex direction="column">
+                        <Flex justify="space-between">
+                            <Flex direction="column">
+                                <Box h="170" w="200px"/>
+                                <VolumeMeter/>
+                            </Flex>
+                            <Box>
+                                {started ? <Button onClick={() => {
+                                    stopHandle()
+                                }}>stop</Button> : <Button onClick={() => {
+                                    setStarted(true)
+                                }}>start</Button>}
+                            </Box>
+                            <svg xmlns="http://www.w3.org/2000/svg"></svg>
+                            {presentationTime}
+                            <div style={{width: "500px", height: "200px"}} className='chart-container'>
+                                <canvas id="myChart"></canvas>
+                            </div>
+                        </Flex>
+                        <PdfViewer file={slide} slideHandle={slideHandle} started={started}/>
+                    </Flex>
+
+                </>
+                : null}
         </>
     )
-}
+})
 
 export default Calibration

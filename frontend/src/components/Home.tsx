@@ -1,8 +1,8 @@
-import {Dispatch, FC, SetStateAction} from "react";
+import React, {Dispatch, FC, SetStateAction} from "react";
 
 ``
 import {useRef} from 'react';
-import {ActionIcon, rem} from '@mantine/core';
+import {ActionIcon, Flex, Progress, rem} from '@mantine/core';
 import {TimeInput} from '@mantine/dates';
 import {IconClock} from '@tabler/icons-react';
 import {Button, Group} from '@mantine/core';
@@ -16,11 +16,11 @@ interface Values {
 }
 
 interface Props {
-    setPdfFile:  Dispatch<SetStateAction<File | null |  string>>;
+    setSlide:  Dispatch<SetStateAction<File | null |  string>>;
     setPresentationTime: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Home: FC<Props> = ({setPdfFile, setPresentationTime}) => {
+const Home: FC<Props> = ({setSlide, setPresentationTime}) => {
     const ref = useRef<HTMLInputElement>(null);
     const navigate = useNavigate()
     const pickerControl = (
@@ -69,7 +69,7 @@ const Home: FC<Props> = ({setPdfFile, setPresentationTime}) => {
                         {/*    key={form.key('code')}*/}
                         {/*    {...form.getInputProps('code')}*/}
                         {/*/>*/}
-                        <PdfDropzone setPdfFile={setPdfFile}/>
+                        <PdfDropzone setSlide={setSlide}/>
                         <Group justify="flex-end" mt="md">
                             <Button type="submit">Submit</Button>
                         </Group>

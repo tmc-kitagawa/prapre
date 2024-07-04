@@ -5,19 +5,19 @@ let audioData: Float32Array[] = [];
 const bufferSize = 1024;
 let audioContext: null | AudioContext = null
 
-const exportWAV = function (audioData: Float32Array[], setFillers:  React.Dispatch<React.SetStateAction<number[]>>) {
+const exportWAV = function (audioData: Float32Array[], setFillers: React.Dispatch<React.SetStateAction<number[]>>) {
 
-    const encodeWAV = function (samples:  Float32Array, sampleRate: number) {
+    const encodeWAV = function (samples: Float32Array, sampleRate: number) {
         const buffer = new ArrayBuffer(44 + samples.length * 2);
         const view = new DataView(buffer);
 
-        const writeString = function (view:  DataView, offset: number, string: string) {
+        const writeString = function (view: DataView, offset: number, string: string) {
             for (let i = 0; i < string.length; i++) {
                 view.setUint8(offset + i, string.charCodeAt(i));
             }
         };
 
-        const floatTo16BitPCM = function (output: DataView, offset: number, input:  Float32Array) {
+        const floatTo16BitPCM = function (output: DataView, offset: number, input: Float32Array) {
             for (let i = 0; i < input.length; i++ , offset += 2) {
                 let s = Math.max(-1, Math.min(1, input[i]));
                 output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
@@ -59,7 +59,7 @@ const exportWAV = function (audioData: Float32Array[], setFillers:  React.Dispat
     };
 
     let dataview = encodeWAV(mergeBuffers(audioData), audio_sample_rate);
-    let audioBlob = new Blob([dataview], { type: 'audio/wav' });
+    let audioBlob = new Blob([dataview], {type: 'audio/wav'});
 
     const data = new FormData();
     // data.append("d", "grammarFileNames=-a-general keepFillerToken=1 sentimentAnalysis=True");
@@ -72,6 +72,16 @@ const exportWAV = function (audioData: Float32Array[], setFillers:  React.Dispat
         setFillers(prev => [...prev, count])
     })
 };
+// volume meter用の関数
+const render = function (percent: number) {
+    // console.log("percent : ", percent);
+
+    // const meter = document.getElementById("volume")
+
+    // meter!.style.background = 'rgb(54, 162, 235)';
+    // meter.style.background = percent < 100 ? 'black' : 'red';
+    // meter!.style.width = Math.min(Math.max(0, percent), 100) + '%';
+}
 
 const onAudioProcess = function (e: any) {
     const input = e.inputBuffer.getChannelData(0);
@@ -81,6 +91,17 @@ const onAudioProcess = function (e: any) {
     }
 
     audioData.push(bufferData);
+
+    // volume meter用の処理
+    // const peak = input.reduce((max: number, sample: number) => {
+    //     const cur = Math.abs(sample);
+    //     return max > cur ? max : cur;
+    // });
+    // const percent = 100 / 24 * 10 * Math.log10(peak) + 100
+
+
+    // render(100 / 24 * 10 * Math.log10(peak) + 100);
+    // render(100 / 32 * 10 * Math.log10(peak) + 100);
 };
 
 const handleSuccess = function (stream: any) {
@@ -97,12 +118,12 @@ const handleSuccess = function (stream: any) {
 };
 
 export const startAmivoice = () => {
-    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+    navigator.mediaDevices.getUserMedia({audio: true, video: false})
         .then(handleSuccess);
 }
 
-export const stopAmivoice = (setFillers:  React.Dispatch<React.SetStateAction<number[]>>) => {
+export const stopAmivoice = (setFillers: React.Dispatch<React.SetStateAction<number[]>>) => {
     exportWAV(audioData, setFillers)
     audioContext?.close()
-    audioData=[]
+    audioData = []
 }
