@@ -16,10 +16,11 @@ interface Values {
 }
 
 interface Props {
-    setPdfFile:  Dispatch<SetStateAction<File | null |  string>>
+    setPdfFile:  Dispatch<SetStateAction<File | null |  string>>;
+    setPresentationTime: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Home: FC<Props> = ({setPdfFile}) => {
+const Home: FC<Props> = ({setPdfFile, setPresentationTime}) => {
     const ref = useRef<HTMLInputElement>(null);
     const navigate = useNavigate()
     const pickerControl = (
@@ -42,12 +43,8 @@ const Home: FC<Props> = ({setPdfFile}) => {
     });
 
     const submitHandler = (values: Values) => {
-        navigate('/calibration', {
-            state: {
-                time: values.time,
-                // code: values.code,
-            }
-        })
+        setPresentationTime(values.time)
+        navigate('/calibration')
     }
 
     return (
@@ -78,6 +75,10 @@ const Home: FC<Props> = ({setPdfFile}) => {
                         </Group>
                     </form>
                 </div>
+                <button onClick={() => {
+                    setPresentationTime("03:00")
+                    navigate('/presentation')
+                }}>開発用</button>
             </div>
         </>
     )

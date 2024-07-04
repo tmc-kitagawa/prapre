@@ -1,4 +1,3 @@
-import axios, {AxiosResponse, AxiosError} from "axios";
 import {Route, Routes} from "react-router-dom";
 import Home from "./components/Home";
 import Calibration from "./components/Calibration";
@@ -7,39 +6,20 @@ import Result from "./components/Result";
 import {MantineProvider} from "@mantine/core";
 import "@mantine/core/styles.css";
 import '@mantine/dropzone/styles.css';
-import {useEffect, useState} from "react";
-
-interface Presentation {
-    id: number;
-    title: String;
-    starttime: number;
-    user_id: number;
-}
+import {useState} from "react";
 
 const App = () => {
     const [pdfFile, setPdfFile] = useState<any>(null)
-
-    useEffect(() => {
-        console.log(pdfFile)
-    }, [pdfFile])
-
-    axios("/api/presentations")
-        .then((res: AxiosResponse<Presentation[]>) =>
-            console.log(res.data)
-
-        )
-        .catch((e: AxiosError<{ error: string }>) => {
-            console.log(e.message);
-        });
+    const [presentationTime, setPresentationTime] = useState("")
+    const [fillers, setFillers] = useState<number[]>([])
 
     return (
         <MantineProvider>
             <Routes>
-                <Route path="/" element={<Home setPdfFile={setPdfFile}/>}/>
+                <Route path="/" element={<Home setPdfFile={setPdfFile} setPresentationTime={setPresentationTime}/>}/>
                 <Route path="calibration" element={<Calibration />}/>
-                <Route path="presentation" element={<Presentation pdfFile={pdfFile}/>}/>
-                <Route path="result" element={<Result/>}/>
-                {/*<Route path="/history" element={<History />} />*/}
+                <Route path="presentation" element={<Presentation pdfFile={pdfFile} presentationTime={presentationTime} setFillers={setFillers}/>}/>
+                <Route path="result" element={<Result fillers={fillers}/>}/>
             </Routes>
         </MantineProvider>
     )

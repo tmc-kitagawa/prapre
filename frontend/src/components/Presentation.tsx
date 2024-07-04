@@ -1,13 +1,13 @@
-import {FC, MutableRefObject, useEffect, useRef} from "react";
+import {FC, memo, MutableRefObject, useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Center} from '@mantine/core';
+import {Button, Center, Flex} from '@mantine/core';
 import "./Presentation.scss"
-import {startbutton, sr} from "../../public/speed_meter_script"
-import { SlideResult } from "../global";
-
+import {startbutton, sr} from "../utils/speed_meter_script"
+import {SlideResult} from "../global";
+import {startAmivoice, stopAmivoice} from "../utils/amivoice.ts";
 
 import PdfViewer from "./PdfViewer";
-import { pdfjs } from 'react-pdf';
+import {pdfjs} from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 
@@ -16,17 +16,16 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     import.meta.url
 ).toString();
 
-// interface SlideResult {
-//     countPercentage: number,
-//     elapsedTime: number
-// }
-
 interface Props {
-    pdfFile:  File;
+    pdfFile: File;
+    presentationTime: string;
+    setFillers: React.Dispatch<React.SetStateAction<number[]>>
 }
 
-const Presentation: FC<Props> = ({pdfFile}) => {
+const Presentation: FC<Props> = memo<Props>(({pdfFile, presentationTime, setFillers}) => {
     const navigate = useNavigate();
+    const [started, setStarted] = useState(false)
+    const [arrSlideResult, setArrSlideResult] = useState<SlideResult[]>([])
 
     let countFastSpeed: MutableRefObject<number> = useRef(0)
     let countVariable: MutableRefObject<number> = useRef(0);
@@ -34,7 +33,6 @@ const Presentation: FC<Props> = ({pdfFile}) => {
     let slideStartTime: MutableRefObject<number> = useRef(0)
     let countPercentage: MutableRefObject<number> = useRef(0)
     let elapsedTime: MutableRefObject<number> = useRef(0)
-    const arrSlideResult: SlideResult[] = [];
 
     const webgazer = window.webgazer;
     useEffect(() => {
@@ -42,13 +40,10 @@ const Presentation: FC<Props> = ({pdfFile}) => {
             .setGazeListener((data: any) => {
                 data.y < 300 && ++countVariable.current;
                 ++countAll.current;
-                // console.log("countVariable : ", countVariable)
-                // console.log("countAll      : ", countAll)
-                // console.log(sr);
                 sr > 4 && ++countFastSpeed.current;
-                // console.log(countFastSpeed.current)
             })
             .begin();
+        startbutton()
     }, [])
 
     const startHandle = () => {
@@ -56,47 +51,64 @@ const Presentation: FC<Props> = ({pdfFile}) => {
         countAll.current = 0;
         countFastSpeed.current = 0;
         slideStartTime.current = Number(new Date());
-        startbutton()
+        setStarted(true)
+        startAmivoice()
     }
 
     const slideHandle = () => {
         countPercentage.current = Math.floor((countVariable.current * 100) / countAll.current);
         elapsedTime.current = Number(new Date()) - slideStartTime.current;
-        // Math.floor((countAll.current - countFastSpeed.current) * 100/ countAll.current)
-        arrSlideResult.push({countPercentage: countPercentage.current, elapsedTime: elapsedTime.current, countFastSpeed:  Math.floor((countAll.current - countFastSpeed.current) * 100/ countAll.current)})
-        // console.log("countPercentage :", countPercentage.current)
-        // console.log("elapsedTime :", elapsedTime.current)
-        startHandle();
+        const resultObj = {
+            countPercentage: countPercentage.current,
+            elapsedTime: elapsedTime.current,
+            countFastSpeed: Math.floor((countAll.current - countFastSpeed.current) * 100 / countAll.current)
+        }
+        setArrSlideResult(prev => [...prev, resultObj])
+        stopAmivoice(setFillers)
+        startAmivoice()
+
+        countVariable.current = 0;
+        countAll.current = 0;
+        countFastSpeed.current = 0;
+        slideStartTime.current = Number(new Date());
     }
 
     const stopHandle = () => {
-        slideHandle();
-        // countPercentage.current = Math.floor((countVariable.current * 100)/countAll.current);
-        // elapsedTime.current = Number(new Date()) - slideStartTime.current;
-        // console.log("countPercentage :" , countPercentage.current)
-        // console.log("elapsedTime :" , elapsedTime.current)
-        // const webgazer = window.webgazer;
+        countPercentage.current = Math.floor((countVariable.current * 100) / countAll.current);
+        elapsedTime.current = Number(new Date()) - slideStartTime.current;
+
+        stopAmivoice(setFillers)
+
+        webgazer.pause()
         webgazer.end();
-        // location.reload();
         console.log(arrSlideResult);
-        navigate("/result", {state: arrSlideResult})
+        navigate("/result", {
+            state: [...arrSlideResult,
+                {
+                    countPercentage: countPercentage.current,
+                    elapsedTime: elapsedTime.current,
+                    countFastSpeed: Math.floor((countAll.current - countFastSpeed.current) * 100 / countAll.current)
+                }
+            ]
+        })
     }
 
 
     return (
         <>
+            <Flex justify="flex-end">
+                {started ? (<Button onClick={stopHandle}>ストップ</Button>) : (
+                    <Button onClick={startHandle}>スタート</Button>)}
+                <p>{presentationTime}</p>
+                <div className='chart-container'>
+                    <canvas id="myChart"></canvas>
+                </div>
+            </Flex>
             <Center>
-                <h1>Presentationページです</h1>
-                <Button onClick={startHandle}>スタート</Button>
-                <button onClick={slideHandle}>スライドめくる</button>
-                <Button onClick={stopHandle}>ストップ</Button>
-                {/*<SpeedMeter/>*/}
-                {/*<canvas id="canvas"></canvas>*/}
-                <canvas id="myChart"></canvas>
+                <PdfViewer file={pdfFile} slideHandle={slideHandle} started={started}/>
             </Center>
-            <PdfViewer file={pdfFile} />
         </>
     )
-}
+})
 
 export default Presentation

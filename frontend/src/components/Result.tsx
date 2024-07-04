@@ -1,4 +1,4 @@
-import {FC} from "react";
+import {FC, useEffect} from "react";
 import {useLocation} from "react-router-dom";
 import {SlideResult} from "../global";
 
@@ -7,14 +7,18 @@ import OneBarChart from "./OneBarChart.tsx";
 import {RadarChart} from '@mantine/charts';
 import {NavLink} from "@mantine/core";
 
-import axios from "axios";
+// import axios from "axios";
 // const sampleResult = [{countPercentage: 80, speed: 50, positive: 50}, {
 //     countPercentage: 60,
 //     speed: 50,
 //     positive: 50
 // }, {countPercentage: 20, speed: 50, positive: 50}]
 
-const Result: FC = () => {
+interface Props {
+    fillers: number[]
+}
+
+const Result: FC<Props> = ({fillers}) => {
     const location = useLocation();
     console.log(location)
     // const eyeSlideScore:Props = {graphTitle: "目線がカメラを向いているか",data: useLocation().state.map((obj: SlideResult, idx: number) => ({
@@ -60,6 +64,14 @@ const Result: FC = () => {
         threshold: 80
     }, {product: '繋ぎ言葉', score: 100, threshold: 80}]
 
+    useEffect(() => {
+        while(document.getElementById("webgazerVideoContainer")){
+            document.getElementById("webgazerVideoContainer")!.remove()
+        }
+        // document.getElementById("webgazerVideoFeed").style.display = 'none'
+
+    }, []);
+
     // setTimeout(async () => {
     //     const res = await axios.post("/api/histories", {
     //         title: "prapre",
@@ -76,7 +88,6 @@ const Result: FC = () => {
 
     return (
         <>
-            <h1>Resultページです</h1>
             <RadarChart h={300}
                         data={scoreData}
                         dataKey="product"
@@ -92,6 +103,7 @@ const Result: FC = () => {
                 <OneBarChart key="eye" graphTitle="目線がカメラを向いているか" slideScore={data}/>
                 <OneBarChart key="speed" graphTitle="話す速度" slideScore={dataSpeed}/>
             </NavLink>
+            {JSON.stringify(fillers)}
         </>
     )
 }
