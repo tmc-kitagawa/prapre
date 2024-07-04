@@ -56,7 +56,7 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers}) => {
                 if (data) {
                     data.y < 300 && ++countVariable.current;
                     ++countAll.current;
-                    sr > 4 && ++countFastSpeed.current;
+                    sr >= 7 && ++countFastSpeed.current;
                 }
             })
             .saveDataAcrossSessions(true)
