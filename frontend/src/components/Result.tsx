@@ -14,7 +14,11 @@ import {NavLink} from "@mantine/core";
 //     positive: 50
 // }, {countPercentage: 20, speed: 50, positive: 50}]
 
-const Result: FC = () => {
+interface Props {
+    fillers: number[]
+}
+
+const Result: FC<Props> = ({fillers}) => {
     const location = useLocation();
     console.log(location)
     // const eyeSlideScore:Props = {graphTitle: "目線がカメラを向いているか",data: useLocation().state.map((obj: SlideResult, idx: number) => ({
@@ -99,6 +103,7 @@ const Result: FC = () => {
                 <OneBarChart key="eye" graphTitle="目線がカメラを向いているか" slideScore={data}/>
                 <OneBarChart key="speed" graphTitle="話す速度" slideScore={dataSpeed}/>
             </NavLink>
+            {JSON.stringify(fillers)}
         </>
     )
 }
