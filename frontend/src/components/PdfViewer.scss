@@ -1,4 +1,6 @@
 .pdf-container {
+  display: flex;
+  justify-content: center;
   &:hover {
     cursor: e-resize;
   }

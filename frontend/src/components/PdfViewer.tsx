@@ -1,6 +1,7 @@
 import React from 'react';
 import {Document, Page, pdfjs} from 'react-pdf';
 import './PdfViewer.scss'
+import {Center, Progress} from "@mantine/core";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -27,16 +28,28 @@ const PdfViewer: React.FC<Props> = ({file, slideHandle, started}) => {
         }
     };
 
+    // デバッグ中
+    // useEffect(() => {
+    //     if (started) {
+    //         window.addEventListener('keydown', (e: KeyboardEvent) => {
+    //             if (e.key === "Enter" || e.key === "ArrowDown" || e.key === "ArrowRight") {
+    //                 changePage(1)
+    //             }
+    //         })
+    //     }
+    // }, [started]);
+
     return (
-        <div className='pdf-container' onClick={() => started ? changePage(1) : null}>
-            <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-                <Page pageNumber={pageNumber}/>
-            </Document>
-            <div>
-                Page {pageNumber} of {numPages}
+        <>
+            <div className='pdf-container' onClick={() => started ? changePage(1) : null}>
+                <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                    <Page width={1100} pageNumber={pageNumber}/>
+                </Document>
             </div>
-            {/*<button onClick={() => changePage(-1)}>Previous</button>*/}
-        </div>
+            <Center mt="10px">
+                <Progress w="1100px" value={100 * pageNumber / numPages}/>
+            </Center>
+        </>
     );
 };
 

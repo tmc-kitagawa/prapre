@@ -42,7 +42,7 @@ function helpModalShow() {
     helpModal.show();
 }
 
-function calcAccuracy(navigate) {
+function calcAccuracy(setCalibrated) {
     // show modal
     // notification for the measurement process
     swal({
@@ -73,8 +73,9 @@ function calcAccuracy(navigate) {
                         if (isConfirm){
                             //clear the calibration & hide the last middle button
                             ClearCanvas();
-                            webgazer.end();
-                            navigate("/presentation")
+                            setCalibrated(true)
+                            // webgazer.end();
+                            // navigate("/presentation")
                         } else {
                             //use restart function to restart the calibration
                             document.getElementById("Accuracy").innerHTML = "<a>Not yet Calibrated</a>";
@@ -88,7 +89,7 @@ function calcAccuracy(navigate) {
     });
 }
 
-function calPointClick(node, navigate) {
+function calPointClick(node, setCalibrated) {
     const id = node.id;
 
     if (!CalibrationPoints[id]){ // initialises if not done
@@ -123,7 +124,7 @@ function calPointClick(node, navigate) {
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 
         // Calculate the accuracy
-        calcAccuracy(navigate);
+        calcAccuracy(setCalibrated);
     }
 }
 
@@ -178,7 +179,7 @@ function sleep (time) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
 
-export const docLoad = (navigate)=>{
+export const docLoad = (setCalibrated)=>{
     // document.querySelectorAll('.Calibration').forEach((i) => {
     //     i.addEventListener('click', () => {
     //         calPointClick(i, navigate);
@@ -210,7 +211,7 @@ export const docLoad = (navigate)=>{
     // click event on the calibration buttons
     document.querySelectorAll('.Calibration').forEach((i) => {
         i.addEventListener('click', () => {
-            calPointClick(i, navigate);
+            calPointClick(i, setCalibrated);
         })
     })
 };

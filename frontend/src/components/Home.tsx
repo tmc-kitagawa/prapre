@@ -1,4 +1,4 @@
-import {Dispatch, FC, SetStateAction} from "react";
+import React, {Dispatch, FC, SetStateAction} from "react";
 
 ``
 import {useRef} from 'react';
@@ -9,6 +9,7 @@ import {Button, Group} from '@mantine/core';
 import {useForm} from '@mantine/form';
 import {useNavigate} from "react-router-dom";
 import {PdfDropzone} from "../components/PdfDropzone"
+import {Document, Page} from "react-pdf";
 
 interface Values {
     time: string;
@@ -16,11 +17,12 @@ interface Values {
 }
 
 interface Props {
-    setPdfFile:  Dispatch<SetStateAction<File | null |  string>>;
+    slide: any;
+    setSlide: Dispatch<SetStateAction<File | null | string>>;
     setPresentationTime: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Home: FC<Props> = ({setPdfFile, setPresentationTime}) => {
+const Home: FC<Props> = ({slide, setSlide, setPresentationTime}) => {
     const ref = useRef<HTMLInputElement>(null);
     const navigate = useNavigate()
     const pickerControl = (
@@ -69,16 +71,15 @@ const Home: FC<Props> = ({setPdfFile, setPresentationTime}) => {
                         {/*    key={form.key('code')}*/}
                         {/*    {...form.getInputProps('code')}*/}
                         {/*/>*/}
-                        <PdfDropzone setPdfFile={setPdfFile}/>
+                        <PdfDropzone setSlide={setSlide}/>
                         <Group justify="flex-end" mt="md">
                             <Button type="submit">Submit</Button>
                         </Group>
+                        {slide && <Document file={slide}>
+                            <Page width={200} pageNumber={1}/>
+                        </Document>}
                     </form>
                 </div>
-                <button onClick={() => {
-                    setPresentationTime("03:00")
-                    navigate('/presentation')
-                }}>開発用</button>
             </div>
         </>
     )

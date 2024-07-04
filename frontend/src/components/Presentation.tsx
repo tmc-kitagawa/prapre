@@ -1,10 +1,11 @@
 import {FC, memo, MutableRefObject, useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Center, Flex} from '@mantine/core';
+import {Button, Center, Flex, Progress} from '@mantine/core';
 import "./Presentation.scss"
 import {startbutton, sr} from "../utils/speed_meter_script"
 import {SlideResult} from "../global";
 import {startAmivoice, stopAmivoice} from "../utils/amivoice.ts";
+import { VolumeMeter } from "./VolumeMeter.tsx";
 
 import PdfViewer from "./PdfViewer";
 import {pdfjs} from 'react-pdf';
@@ -104,6 +105,11 @@ const Presentation: FC<Props> = memo<Props>(({pdfFile, presentationTime, setFill
                     <canvas id="myChart"></canvas>
                 </div>
             </Flex>
+            {/*<Progress value={} w="500px"/>*/}
+                <VolumeMeter/>
+                {/*<div style={{border: "1px solid black", width: "500px"}}>*/}
+                {/*    <div id="volume" style={{height: "10px", background: "black", transition: "width .1s", width: "0%"}}></div>*/}
+                {/*</div>*/}
             <Center>
                 <PdfViewer file={pdfFile} slideHandle={slideHandle} started={started}/>
             </Center>
