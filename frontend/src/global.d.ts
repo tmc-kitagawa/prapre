@@ -6,7 +6,14 @@ export interface SlideResult {
     countFastSpeed: number
 }
 
-// export interface SlideScore {
-//     slide: string,
-//     score: number
-// }
+export interface History {
+    id: number,
+    title: string,
+     startTime: number,
+     userId: number,
+     scoreEye: number,
+     scoreVolume: number,
+     scoreFiller: number,
+     scoreSpeed: number,
+     scoreTime: number
+}
