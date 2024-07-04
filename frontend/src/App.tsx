@@ -16,7 +16,7 @@ const App = () => {
     return (
         <MantineProvider>
             <Routes>
-                <Route path="/" element={<Home setSlide={setSlide} setPresentationTime={setPresentationTime}/>}/>
+                <Route path="/" element={<Home slide={slide} setSlide={setSlide} setPresentationTime={setPresentationTime}/>}/>
                 <Route path="calibration" element={<Calibration slide={slide} presentationTime={presentationTime} setFillers={setFillers} />}/>
                 <Route path="presentation" element={<Presentation pdfFile={slide} presentationTime={presentationTime} setFillers={setFillers}/>}/>
                 <Route path="result" element={<Result fillers={fillers}/>}/>

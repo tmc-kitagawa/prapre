@@ -1,4 +1,4 @@
-import {FC, useEffect, useState, memo, MutableRefObject, useRef} from "react";
+import {useEffect, useState, memo, MutableRefObject, useRef} from "react";
 import "./Calibration.scss";
 import {Restart} from "../utils/main"
 import {useNavigate} from "react-router-dom";
@@ -12,7 +12,7 @@ import PdfViewer from "./PdfViewer";
 import {pdfjs} from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-import {Flex, Box, Button, Group} from '@mantine/core'
+import {Flex, Box, Button} from '@mantine/core'
 
 
 declare global {
@@ -86,10 +86,6 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers}) => {
             countFastSpeed.current = 0;
             slideStartTime.current = Number(new Date());
             startAmivoice()
-
-            window.addEventListener('keydown', () => {
-                console.log("keydown")
-            })
         }
 
     }, [started]);

@@ -28,6 +28,17 @@ const PdfViewer: React.FC<Props> = ({file, slideHandle, started}) => {
         }
     };
 
+    // デバッグ中
+    // useEffect(() => {
+    //     if (started) {
+    //         window.addEventListener('keydown', (e: KeyboardEvent) => {
+    //             if (e.key === "Enter" || e.key === "ArrowDown" || e.key === "ArrowRight") {
+    //                 changePage(1)
+    //             }
+    //         })
+    //     }
+    // }, [started]);
+
     return (
         <>
             <div className='pdf-container' onClick={() => started ? changePage(1) : null}>
@@ -36,7 +47,7 @@ const PdfViewer: React.FC<Props> = ({file, slideHandle, started}) => {
                 </Document>
             </div>
             <Center mt="10px">
-            <Progress w="1100px" value={100 * pageNumber / numPages}/>
+                <Progress w="1100px" value={100 * pageNumber / numPages}/>
             </Center>
         </>
     );
