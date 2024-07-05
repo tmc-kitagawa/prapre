@@ -12,8 +12,8 @@ import PdfViewer from "./PdfViewer";
 import {pdfjs} from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-import {Flex, Box, Button} from '@mantine/core'
-
+import {Flex, Box, Group, ActionIcon} from '@mantine/core'
+import {FaRegPlayCircle, FaRegStopCircle} from "react-icons/fa"
 
 declare global {
     interface Window {
@@ -30,7 +30,7 @@ interface Props {
     slide: File;
     presentationTime: string;
     setFillers: React.Dispatch<React.SetStateAction<number[]>>
-    setVolumes:  React.Dispatch<React.SetStateAction<number[]>>
+    setVolumes: React.Dispatch<React.SetStateAction<number[]>>
 }
 
 const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolumes}) => {
@@ -134,7 +134,7 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
 
     useEffect(() => {
         if (end && !slided) {
-        navigate("/result", {state: arrSlideResult})
+            navigate("/result", {state: arrSlideResult})
         }
     }, [end, slided]);
 
@@ -144,7 +144,8 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
             <nav id="webgazerNavbar" className="navbar navbar-expand-lg navbar-default navbar-fixed-top">
                 <div className="container-fluid">
                     <div className="navbar-header">
-                        <button type="button" className="navbar-toggler" data-toggle="collapse" data-target="#myNavbar">
+                        <button type="button" className="navbar-toggler" data-toggle="collapse"
+                                data-target="#myNavbar">
                             <span className="navbar-toggler-icon">Menu</span>
                         </button>
                     </div>
@@ -154,6 +155,11 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
                             {/*<li><a onClick="Restart()" href="#">Recalibrate</a></li>*/}
                             {/*<li><a onClick="webgazer.applyKalmanFilter(!webgazer.params.applyKalmanFilter)" href="#">Toggle*/}
                             {/*    Kalman Filter</a></li>*/}
+                            {/*<Center>*/}
+                            {/*    <FaRegPlayCircle size="150px" onClick={() => {*/}
+                            {/*        console.log("startされました")*/}
+                            {/*    }}/>*/}
+                            {/*</Center>*/}
                         </ul>
                         <ul className="nav navbar-nav navbar-right">
                             {/*<li><a className="helpBtn" onClick="helpModalShow()" href="#"><span*/}
@@ -195,34 +201,41 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
 
                 </div>
             </div>
+
             {calibrated ?
                 <>
                     <Flex direction="column">
-                        <Flex justify="space-between">
+                        <Group justify="space-between">
                             <Flex direction="column">
                                 <Box h="170" w="200px"/>
-                                <VolumeMeter setVolumes={setVolumes} started={started} slided={slided} setSlided={setSlided}/>
+                                <VolumeMeter setVolumes={setVolumes} started={started} slided={slided}
+                                             setSlided={setSlided}/>
                             </Flex>
-                            <Box>
-                                {started ? <Button onClick={() => {
-                                    stopHandle()
-                                }}>stop</Button> : <Button onClick={() => {
-                                    setStarted(true)
-                                }}>start</Button>}
-                            </Box>
-                            <svg xmlns="http://www.w3.org/2000/svg"></svg>
+                            {started ?
+                                <ActionIcon variant="subtle" size="100px" radius="50px">
+                                    <FaRegStopCircle size="100px" onClick={() => {
+                                        stopHandle()
+                                    }}/>
+                                </ActionIcon>
+                                :
+                                <ActionIcon variant="subtle" size="100px" radius="50px">
+                                    <FaRegPlayCircle size="100px" onClick={() => {
+                                        setStarted(true)
+                                    }}/>
+                                </ActionIcon>
+                            }
                             {presentationTime}
                             <div style={{width: "500px", height: "200px"}} className='chart-container'>
                                 <canvas id="myChart"></canvas>
                             </div>
-                        </Flex>
+                        </Group>
                         <PdfViewer file={slide} slideHandle={slideHandle} started={started}/>
                     </Flex>
 
                 </>
                 : null}
         </>
-    )
+    );
 })
 
 export default Calibration
