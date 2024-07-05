@@ -25,6 +25,7 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
     const [histories, setHistories] = useState<History[] | undefined>(undefined)
     const [activeHistory, setActiveHistory] = useState<number>(0)
     const [opened, {open, close}] = useDisclosure(false);
+    const [totalScore, setTotalScore] = useState<null | number>(null)
     const location = useLocation();
     const data: Record<string, any>[] = useLocation().state.slideScore.map((obj: SlideResult, idx: number) => ({
         slide: "slide " + (idx + 1),
@@ -106,29 +107,24 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
 
     useEffect(() => {
         (async () => {
-            console.log({
-                title: slide.name,
-                startTime: location.state.starttime,
-                userId: userId,
-                scoreEye: eyeScore,
-                scoreVolume: volumeScore,
-                scoreFiller: fillersScore,
-                scoreSpeed: speedScore,
-                scoreTime: timeScore
-            })
-        if (fillers.length === volumes.length && userId) {
-            const res = await axios.post("/api/histories", {
-                title: slide.name,
-                startTime: location.state.starttime,
-                userId: userId,
-                scoreEye: eyeScore,
-                scoreVolume: volumeScore,
-                scoreFiller: fillersScore,
-                scoreSpeed: speedScore,
-                scoreTime: timeScore
-            });
-            console.log(res);
-        }
+            try {
+                if (fillers.length === volumes.length && userId) {
+                    setTotalScore(Math.floor((eyeScore + volumeScore + fillersScore + speedScore + timeScore) / 5))
+                    const res = await axios.post("/api/histories", {
+                        title: slide.name,
+                        startTime: location.state.starttime,
+                        userId: userId,
+                        scoreEye: eyeScore,
+                        scoreVolume: volumeScore,
+                        scoreFiller: fillersScore,
+                        scoreSpeed: speedScore,
+                        scoreTime: timeScore
+                    });
+                    console.log(res);
+                }
+            } catch (err) {
+                console.log(err)
+            }
         })()
     }, [fillers, volumes]);
 
@@ -183,6 +179,7 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
                     />
                 }
                 <Box w="300px">
+                    {totalScore && <h2>{totalScore}点</h2>}
                     <h2>{Math.floor(totalElapsed / 60)}:{totalElapsed % 60}</h2>
                 </Box>
             </Center>

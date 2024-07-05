@@ -11,7 +11,7 @@ interface props {
     setVolumes: Dispatch<SetStateAction<number[]>>
 }
 
-export const VolumeMeter: FC<props> = ({ started, slided, setSlided,setVolumes}) => {
+export const VolumeMeter: FC<props> = ({started, slided, setSlided, setVolumes}) => {
     const [percent, setPercent] = useState(0)
     let countSmallVolume: MutableRefObject<number> = useRef(0)
     let countBigVolume: MutableRefObject<number> = useRef(0)
@@ -58,7 +58,11 @@ export const VolumeMeter: FC<props> = ({ started, slided, setSlided,setVolumes})
 
     useEffect(() => {
         if (slided) {
-            setVolumes(prev => [...prev, Math.floor((countBigVolume.current * 100) / (countSmallVolume.current + countBigVolume.current))])
+            if (countSmallVolume.current + countBigVolume.current === 0) {
+                setVolumes(prev => [...prev, 0])
+            } else {
+                setVolumes(prev => [...prev, Math.floor((countBigVolume.current * 100) / (countSmallVolume.current + countBigVolume.current))])
+            }
             countBigVolume.current = 0;
             countSmallVolume.current = 0;
             setSlided(false)
