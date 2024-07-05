@@ -72,16 +72,6 @@ const exportWAV = function (audioData: Float32Array[], setFillers: React.Dispatc
         setFillers(prev => [...prev, count])
     })
 };
-// volume meter用の関数
-const render = function (percent: number) {
-    // console.log("percent : ", percent);
-
-    // const meter = document.getElementById("volume")
-
-    // meter!.style.background = 'rgb(54, 162, 235)';
-    // meter.style.background = percent < 100 ? 'black' : 'red';
-    // meter!.style.width = Math.min(Math.max(0, percent), 100) + '%';
-}
 
 const onAudioProcess = function (e: any) {
     const input = e.inputBuffer.getChannelData(0);
@@ -91,17 +81,6 @@ const onAudioProcess = function (e: any) {
     }
 
     audioData.push(bufferData);
-
-    // volume meter用の処理
-    // const peak = input.reduce((max: number, sample: number) => {
-    //     const cur = Math.abs(sample);
-    //     return max > cur ? max : cur;
-    // });
-    // const percent = 100 / 24 * 10 * Math.log10(peak) + 100
-
-
-    // render(100 / 24 * 10 * Math.log10(peak) + 100);
-    // render(100 / 32 * 10 * Math.log10(peak) + 100);
 };
 
 const handleSuccess = function (stream: any) {

@@ -30,7 +30,7 @@ class SecurityController(
         @RequestParam("password") password: String
     ): String {
         userDetailsManager.createUser(makeUser(username, password, "USER"))
-        return "redirect: signin"
+        return "redirect: /"
     }
 
     private fun makeUser(user: String, pw: String, role: String): UserDetails {

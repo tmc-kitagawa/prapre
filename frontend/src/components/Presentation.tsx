@@ -1,6 +1,6 @@
 import {FC, memo, MutableRefObject, useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Center, Flex, Progress} from '@mantine/core';
+import {Button, Center, Flex} from '@mantine/core';
 import "./Presentation.scss"
 import {startbutton, sr} from "../utils/speed_meter_script"
 import {SlideResult} from "../global";

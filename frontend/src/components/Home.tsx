@@ -1,4 +1,4 @@
-import React, {Dispatch, FC, SetStateAction} from "react";
+import React, {Dispatch, FC, SetStateAction, useEffect} from "react";
 
 ``
 import {useRef} from 'react';
@@ -10,6 +10,8 @@ import {useForm} from '@mantine/form';
 import {useNavigate} from "react-router-dom";
 import {PdfDropzone} from "../components/PdfDropzone"
 import {Document, Page} from "react-pdf";
+import axios from "axios";
+import Signout from "./Signout";
 
 interface Values {
     time: string;
@@ -17,12 +19,13 @@ interface Values {
 }
 
 interface Props {
+    setUserId: React.Dispatch<React.SetStateAction<number | null>>;
     slide: any;
     setSlide: Dispatch<SetStateAction<File | null | string>>;
     setPresentationTime: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Home: FC<Props> = ({slide, setSlide, setPresentationTime}) => {
+const Home: FC<Props> = ({setUserId, slide, setSlide, setPresentationTime}) => {
     const ref = useRef<HTMLInputElement>(null);
     const navigate = useNavigate()
     const pickerControl = (
@@ -43,6 +46,17 @@ const Home: FC<Props> = ({slide, setSlide, setPresentationTime}) => {
             // code: (value) => (value.length !== 0 ? null : '埋め込みコードを入力してください'),
         },
     });
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const res = await axios("/api/user");
+                setUserId(res.data);
+            } catch (err) {
+                console.error(err)
+            }
+        })();
+    }, []);
 
     const submitHandler = (values: Values) => {
         setPresentationTime(values.time)
@@ -80,6 +94,7 @@ const Home: FC<Props> = ({slide, setSlide, setPresentationTime}) => {
                         </Document>}
                     </form>
                 </div>
+                <Signout />
             </div>
         </>
     )
