@@ -42,3 +42,4 @@ out/
 .env
 
 static/
+src/main/resources/static/

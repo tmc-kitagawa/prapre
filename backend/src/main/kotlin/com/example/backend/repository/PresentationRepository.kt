@@ -35,6 +35,10 @@ class PresentationRepository(
         return jdbcTemplate.query("SELECT * FROM presentations", presentationRowMapper)
     }
 
+    fun getPresentationsOfUser(userid: Long): List<Presentation> {
+        return jdbcTemplate.query("SELECT * FROM presentations WHERE user_id = ?", presentationRowMapper, userid)
+    }
+
     fun insertHistory(request: Request): String {
         jdbcTemplate.update("INSERT INTO presentations (id, title, starttime, user_id, score_eye, score_volume, score_filler, score_speed, score_time) VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?)", request.title, request.startTime, request.userId,  request.scoreEye, request.scoreVolume, request.scoreFiller, request.scoreSpeed, request.scoreTime)
         return "insertHistory"

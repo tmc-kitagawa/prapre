@@ -5,6 +5,7 @@ import com.example.backend.dataclass.Request
 import com.example.backend.repository.PresentationRepository
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -15,6 +16,11 @@ class PresentationsController(val presentationRepository: PresentationRepository
     @GetMapping("/api/presentations")
     fun getPresentations(): List<Presentation> {
         return presentationRepository.getPresentations()
+    }
+
+    @GetMapping("/api/presentations/{userid}")
+    fun getPresentationsOfUser(@PathVariable("userid") userid: Long): List<Presentation> {
+        return presentationRepository.getPresentationsOfUser(userid)
     }
 
     @PostMapping("/api/histories")

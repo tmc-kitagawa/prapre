@@ -9,6 +9,7 @@ import '@mantine/dropzone/styles.css';
 import {useState} from "react";
 
 const App = () => {
+    const [userId, setUserId] = useState<null | number>(null)
     const [slide, setSlide] = useState<any>(null)
     const [presentationTime, setPresentationTime] = useState("")
     const [fillers, setFillers] = useState<number[]>([])
@@ -16,10 +17,10 @@ const App = () => {
     return (
         <MantineProvider>
             <Routes>
-                <Route path="/" element={<Home slide={slide} setSlide={setSlide} setPresentationTime={setPresentationTime}/>}/>
+                <Route path="/" element={<Home setUserId={setUserId} slide={slide} setSlide={setSlide} setPresentationTime={setPresentationTime}/>}/>
                 <Route path="calibration" element={<Calibration slide={slide} presentationTime={presentationTime} setFillers={setFillers} />}/>
                 <Route path="presentation" element={<Presentation pdfFile={slide} presentationTime={presentationTime} setFillers={setFillers}/>}/>
-                <Route path="result" element={<Result fillers={fillers}/>}/>
+                <Route path="result" element={<Result userId={userId} fillers={fillers}/>}/>
             </Routes>
         </MantineProvider>
     )

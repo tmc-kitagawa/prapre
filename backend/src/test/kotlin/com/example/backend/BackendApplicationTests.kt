@@ -43,6 +43,21 @@ class BackendApplicationTests(
 	}
 
 	@Test
+	fun `GET-userIdリクエストはOKステータスを返す`() {
+		val response = restTemplate.getForEntity("http://localhost:$port/api/presentations/3", String::class.java)
+		assertThat(response.statusCode, equalTo(HttpStatus.OK))
+	}
+	@Test
+	fun `GET-userIdリクエストはPresentationsオブジェクトのリストを返す`() {
+		val response = restTemplate.getForEntity("http://localhost:$port/api/presentations/3", Array<Presentation>::class.java)
+		assertThat(response.headers.contentType, equalTo(MediaType.APPLICATION_JSON))
+		val presentations = response.body!!
+		assertThat(presentations.size, equalTo(1))
+		assertThat(presentations[0].id, equalTo(3))
+		assertThat(presentations[0].title, equalTo("thirdTitle"))
+	}
+
+	@Test
 	fun `POSTリクエストはステータスコード201を返す`(){
 		val request = Request("titleだよ", 1719904090394, 1, 50, 50, 50,50, 50)
 		val response = restTemplate.postForEntity("http://localhost:$port/api/histories", request, String::class.java)

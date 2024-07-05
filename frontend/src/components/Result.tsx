@@ -14,10 +14,11 @@ import "moment/dist/locale/ja"
 import moment from "moment";
 
 interface Props {
+    userId: number | null;
     fillers: number[]
 }
 
-const Result: FC<Props> = ({fillers}) => {
+const Result: FC<Props> = ({userId, fillers}) => {
     const [histories, setHistories] = useState<History[] | undefined>(undefined)
     const [activeHistory, setActiveHistory] = useState<number>(0)
     const [opened, {open, close}] = useDisclosure(false);
@@ -61,7 +62,14 @@ const Result: FC<Props> = ({fillers}) => {
     }, []);
 
     useEffect(() => {
-        axios("/api/presentations").then((arrayHistories) => setHistories(arrayHistories.data))
+        (async () => {
+            try {
+                const res = await axios(`/api/presentations/${userId}`)
+                setHistories(res.data)
+            } catch (err) {
+                console.log(err)
+            }
+        })()
     }, []);
 
     const [mergedRadarData, setMergedRadarData] = useState<Record<string, any>[]>(scoreData);
