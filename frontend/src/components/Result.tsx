@@ -1,17 +1,19 @@
-import {FC, useEffect, useState} from "react";
-import {useLocation} from "react-router-dom";
+import  {FC, useEffect, useState} from "react";
+import {useLocation, useNavigate} from "react-router-dom";
 import {SlideResult, History} from "../global";
 
-import {NavLink, Drawer, Button, Center, Box} from "@mantine/core";
+import {NavLink, Drawer, Button, Center, Box, Flex, Menu, Burger} from "@mantine/core";
 import {RadarChart} from '@mantine/charts';
 import {useDisclosure} from "@mantine/hooks";
 import '@mantine/charts/styles.css';
+import {FaRegChartBar, FaHistory, FaSignOutAlt, FaHome, FaRedo, FaUser} from "react-icons/fa";
 
 import OneBarChart from "./OneBarChart.tsx";
 
 import axios from "axios";
 import "moment/dist/locale/ja"
 import moment from "moment";
+import Signout from "./Signout.tsx";
 
 interface Props {
     userId: number | null;
@@ -24,10 +26,13 @@ interface Props {
 const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) => {
     const [histories, setHistories] = useState<History[] | undefined>(undefined)
     const [activeHistory, setActiveHistory] = useState<number>(0)
+    const [drawerData, setDrawerData] = useState<boolean>(false)
+    const [openedToggle, { toggle }] = useDisclosure();
     const [opened, {open, close}] = useDisclosure(false);
     const [totalScore, setTotalScore] = useState<null | number>(null)
     const location = useLocation();
     const data: Record<string, any>[] = useLocation().state.slideScore.map((obj: SlideResult, idx: number) => ({
+    const navigate = useNavigate();
         slide: "slide " + (idx + 1),
         score: obj.countPercentage
     }))
@@ -131,7 +136,12 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
     return (
         <>
             <Drawer opened={opened} onClose={close} position="right" overlayProps={{backgroundOpacity: 0}}>
-                {histories && histories.map((history, idx) => (
+                {drawerData ?
+                    <>
+                        <NavLink label={"ユーザーアカウント"} leftSection={<FaUser size="50px"/>}/>
+                        <NavLink label={"ログアウト"} leftSection={<FaSignOutAlt size="50px"><Signout/></FaSignOutAlt>}/>
+                    </>
+                    : histories && histories.map((history, idx) => (
                     <div>
                         <NavLink key={history.title} defaultOpened style={{width: "100%"}}
                                  active={idx === activeHistory} onClick={() => selectHistory(idx)}
@@ -150,6 +160,22 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
                     </div>
                 ))}
             </Drawer>
+            <Flex p="10px" justify="flex-end">
+                <Menu shadow="md" width={200}>
+                    <Menu.Target>
+                        {/*<Button>button</Button>*/}
+                        <Burger size="lg" opened={openedToggle} onClick={toggle} aria-label="Toggle navigation" />
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                        <Menu.Item leftSection={<FaUser/>}>
+                            アカウント
+                        </Menu.Item>
+                        <Menu.Item onClick={() => {<Signout/>}}  leftSection={ <FaSignOutAlt/>} >
+                            サインアウト
+                        </Menu.Item>
+                    </Menu.Dropdown>
+                </Menu>
+            </Flex>
             <Center>
                 {mergedRadarData[0]["履歴"] ?
                     <RadarChart h={500}
@@ -183,12 +209,22 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
                     <h2>{Math.floor(totalElapsed / 60)}:{totalElapsed % 60}</h2>
                 </Box>
             </Center>
-            <Center>
-                <Button onClick={open}>履歴を表示</Button>
-            </Center>
+            <Flex gap="70px" p="10px" justify="center" align="center">
+                <Button leftSection={<FaRedo/>}>
+                    もう一度練習する
+                </Button>
+                <Button variant="default" leftSection={<FaHistory/>} onClick={() => {
+                    setDrawerData(false)
+                    open()
+                }}>履歴を表示</Button>
+                <Button variant="default" leftSection={<FaHome/>} onClick={() => {navigate('/')}}>
+                    ホームへ戻る
+                </Button>
+            </Flex>
             <Center>
                 <Box w="700px">
-                    <NavLink label="結果の詳細を表示" defaultOpened color="blue.5" active>
+                    <NavLink leftSection={<FaRegChartBar/>} label="結果の詳細を表示" defaultOpened color="blue.5"
+                             active>
                         <OneBarChart key="eye" graphTitle="目線がカメラを向いているか" slideScore={data}/>
                         <OneBarChart key="speed" graphTitle="話す速度" slideScore={dataSpeed}/>
                         <OneBarChart key="volume" graphTitle="ハキハキ" slideScore={volumeBarData}/>

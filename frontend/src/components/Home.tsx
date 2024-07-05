@@ -2,16 +2,20 @@ import React, {Dispatch, FC, SetStateAction, useEffect} from "react";
 
 ``
 import {useRef} from 'react';
-import {ActionIcon, rem} from '@mantine/core';
+import {ActionIcon, rem, Menu, Burger} from '@mantine/core';
 import {TimeInput} from '@mantine/dates';
 import {IconClock} from '@tabler/icons-react';
-import {Button, Group} from '@mantine/core';
+import {Button, Group, Flex} from '@mantine/core';
 import {useForm} from '@mantine/form';
 import {useNavigate} from "react-router-dom";
 import {PdfDropzone} from "../components/PdfDropzone"
 import {Document, Page} from "react-pdf";
 import axios from "axios";
 import Signout from "./Signout";
+
+import {FaSignOutAlt, FaUser} from "react-icons/fa";
+import {useDisclosure} from "@mantine/hooks";
+
 
 interface Values {
     time: string;
@@ -26,6 +30,8 @@ interface Props {
 }
 
 const Home: FC<Props> = ({setUserId, slide, setSlide, setPresentationTime}) => {
+    // const [opened, {open, close}] = useDisclosure(false);
+    const [opened, { toggle }] = useDisclosure();
     const ref = useRef<HTMLInputElement>(null);
     const navigate = useNavigate()
     const pickerControl = (
@@ -65,9 +71,30 @@ const Home: FC<Props> = ({setUserId, slide, setSlide, setPresentationTime}) => {
 
     return (
         <>
+            {/*<Drawer opened={opened} onClose={close} position="right" overlayProps={{backgroundOpacity: 0}}>*/}
+            {/*    <FaSignOutAlt size="200px">*/}
+            {/*        <Signout/>*/}
+            {/*    </FaSignOutAlt>*/}
+            {/*</Drawer>*/}
             <div>
                 <div>
-                    <h1>PraPre</h1>
+                    <Flex p="10px" justify="space-between">
+                        <h1>PraPre</h1>
+                        <Menu shadow="md" width={200}>
+                        <Menu.Target>
+                            {/*<Button>button</Button>*/}
+                            <Burger size="lg" opened={opened} onClick={toggle} aria-label="Toggle navigation" />
+                        </Menu.Target>
+                            <Menu.Dropdown>
+                                <Menu.Item leftSection={<FaUser/>}>
+                                    アカウント
+                                </Menu.Item>
+                                <Menu.Item onClick={() => {<Signout/>}}  leftSection={ <FaSignOutAlt/>} >
+                                    サインアウト
+                                </Menu.Item>
+                            </Menu.Dropdown>
+                        </Menu>
+                    </Flex>
                     <p>Practice for Presentations</p>
                 </div>
 
@@ -87,17 +114,16 @@ const Home: FC<Props> = ({setUserId, slide, setSlide, setPresentationTime}) => {
                         {/*/>*/}
                         <PdfDropzone setSlide={setSlide}/>
                         <Group justify="flex-end" mt="md">
-                            <Button type="submit">Submit</Button>
+                            <Button type="submit" w="150px" h="25px">すすむ</Button>
                         </Group>
                         {slide && <Document file={slide}>
                             <Page width={200} pageNumber={1}/>
                         </Document>}
                     </form>
                 </div>
-                <Signout/>
             </div>
         </>
     )
-}
+};
 
 export default Home
