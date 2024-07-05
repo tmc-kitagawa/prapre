@@ -16,9 +16,10 @@ import moment from "moment";
 interface Props {
     userId: number | null;
     fillers: number[]
+    volumes: number[]
 }
 
-const Result: FC<Props> = ({userId, fillers}) => {
+const Result: FC<Props> = ({userId, fillers, volumes}) => {
     const [histories, setHistories] = useState<History[] | undefined>(undefined)
     const [activeHistory, setActiveHistory] = useState<number>(0)
     const [opened, {open, close}] = useDisclosure(false);
@@ -160,6 +161,7 @@ const Result: FC<Props> = ({userId, fillers}) => {
                 </Box>
             </Center>
             {JSON.stringify(fillers)}
+            {JSON.stringify(volumes)}
         </>
     )
 }

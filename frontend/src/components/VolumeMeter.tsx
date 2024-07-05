@@ -1,11 +1,20 @@
-import {FC, useState, useEffect} from "react";
+import {FC, useEffect, Dispatch, SetStateAction, MutableRefObject, useRef, useState} from "react";
 import {Progress} from "@mantine/core"
 
 const bufferSize = 1024;
 let audioContext: null | AudioContext = null
 
-export const VolumeMeter: FC = () => {
+interface props {
+    started: boolean,
+    slided: boolean,
+    setSlided: Dispatch<SetStateAction<boolean>>
+    setVolumes: Dispatch<SetStateAction<number[]>>
+}
+
+export const VolumeMeter: FC<props> = ({ started, slided, setSlided,setVolumes}) => {
     const [percent, setPercent] = useState(0)
+    let countSmallVolume: MutableRefObject<number> = useRef(0)
+    let countBigVolume: MutableRefObject<number> = useRef(0)
 
     const onAudioProcess = function (e: any) {
         const input = e.inputBuffer.getChannelData(0);
@@ -17,7 +26,6 @@ export const VolumeMeter: FC = () => {
         });
         const percent = 100 / 24 * 10 * Math.log10(peak) + 100
         setPercent(percent)
-        // render(100 / 32 * 10 * Math.log10(peak) + 100);
     };
 
     const handleSuccess = function (stream: any) {
@@ -41,9 +49,26 @@ export const VolumeMeter: FC = () => {
         startVolumeMeter()
     }, []);
 
+    useEffect(() => {
+        if (started) {
+            percent >= 10 && percent <= 50 && ++countSmallVolume.current;
+            percent > 50 && ++countBigVolume.current;
+        }
+    }, [percent]);
+
+    useEffect(() => {
+        if (slided) {
+            setVolumes(prev => [...prev, Math.floor((countBigVolume.current * 100) / (countSmallVolume.current + countBigVolume.current))])
+            countBigVolume.current = 0;
+            countSmallVolume.current = 0;
+            setSlided(false)
+        }
+    }, [slided]);
+
     return (
         <>
             <Progress value={percent} w="200px"/>
         </>
     )
 }
+

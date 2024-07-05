@@ -13,14 +13,15 @@ const App = () => {
     const [slide, setSlide] = useState<any>(null)
     const [presentationTime, setPresentationTime] = useState("")
     const [fillers, setFillers] = useState<number[]>([])
+    const [volumes, setVolumes] = useState<number[]>([])
 
     return (
         <MantineProvider>
             <Routes>
                 <Route path="/" element={<Home setUserId={setUserId} slide={slide} setSlide={setSlide} setPresentationTime={setPresentationTime}/>}/>
-                <Route path="calibration" element={<Calibration slide={slide} presentationTime={presentationTime} setFillers={setFillers} />}/>
+                <Route path="calibration" element={<Calibration slide={slide} presentationTime={presentationTime} setFillers={setFillers} setVolumes={setVolumes}/>}/>
                 <Route path="presentation" element={<Presentation pdfFile={slide} presentationTime={presentationTime} setFillers={setFillers}/>}/>
-                <Route path="result" element={<Result userId={userId} fillers={fillers}/>}/>
+                <Route path="result" element={<Result userId={userId} fillers={fillers} volumes={volumes}/>}/>
             </Routes>
         </MantineProvider>
     )

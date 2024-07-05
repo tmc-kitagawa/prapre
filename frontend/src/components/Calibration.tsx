@@ -30,13 +30,16 @@ interface Props {
     slide: File;
     presentationTime: string;
     setFillers: React.Dispatch<React.SetStateAction<number[]>>
+    setVolumes:  React.Dispatch<React.SetStateAction<number[]>>
 }
 
-const Calibration = memo<Props>(({slide, presentationTime, setFillers}) => {
+const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolumes}) => {
     const navigate = useNavigate()
     const [calibrated, setCalibrated] = useState(false)
     const [started, setStarted] = useState(false)
     const [arrSlideResult, setArrSlideResult] = useState<SlideResult[]>([])
+    const [slided, setSlided] = useState(false)
+    const [end, setEnd] = useState(false)
 
     let countFastSpeed: MutableRefObject<number> = useRef(0)
     let countVariable: MutableRefObject<number> = useRef(0);
@@ -50,13 +53,12 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers}) => {
     useEffect(() => {
         docLoad(setCalibrated);
 
-
         webgazer.setRegression('ridge') /* currently must set regression and tracker */
             .setGazeListener(function (data: any) {
                 if (data) {
                     data.y < 300 && ++countVariable.current;
                     ++countAll.current;
-                    sr > 4 && ++countFastSpeed.current;
+                    sr >= 7 && ++countFastSpeed.current;
                 }
             })
             .saveDataAcrossSessions(true)
@@ -91,6 +93,7 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers}) => {
     }, [started]);
 
     const slideHandle = () => {
+        setSlided(true)
         countPercentage.current = Math.floor((countVariable.current * 100) / countAll.current);
         elapsedTime.current = Number(new Date()) - slideStartTime.current;
         const resultObj = {
@@ -109,6 +112,7 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers}) => {
     }
 
     const stopHandle = () => {
+        setSlided(true)
         countPercentage.current = Math.floor((countVariable.current * 100) / countAll.current);
         elapsedTime.current = Number(new Date()) - slideStartTime.current;
         stopAmivoice(setFillers)
@@ -116,17 +120,23 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers}) => {
         webgazer.pause()
         webgazer.end()
 
+        setEnd(true)
+
         console.log(arrSlideResult);
-        navigate("/result", {
-            state: [...arrSlideResult,
-                {
-                    countPercentage: countPercentage.current,
-                    elapsedTime: elapsedTime.current,
-                    countFastSpeed: Math.floor((countAll.current - countFastSpeed.current) * 100 / countAll.current)
-                }
-            ]
-        })
+
+        const resultObj = {
+            countPercentage: countPercentage.current,
+            elapsedTime: elapsedTime.current,
+            countFastSpeed: Math.floor((countAll.current - countFastSpeed.current) * 100 / countAll.current)
+        }
+        setArrSlideResult(prev => [...prev, resultObj])
     }
+
+    useEffect(() => {
+        if (end && !slided) {
+        navigate("/result", {state: arrSlideResult})
+        }
+    }, [end, slided]);
 
     return (
         <>
@@ -191,7 +201,7 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers}) => {
                         <Flex justify="space-between">
                             <Flex direction="column">
                                 <Box h="170" w="200px"/>
-                                <VolumeMeter/>
+                                <VolumeMeter setVolumes={setVolumes} started={started} slided={slided} setSlided={setSlided}/>
                             </Flex>
                             <Box>
                                 {started ? <Button onClick={() => {
