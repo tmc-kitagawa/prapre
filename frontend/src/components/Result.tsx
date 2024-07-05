@@ -19,46 +19,67 @@ interface Props {
     userId: number | null;
     fillers: number[]
     volumes: number[]
+    presentationTime: string;
+    slide: any;
 }
 
-const Result: FC<Props> = ({userId, fillers, volumes}) => {
+const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) => {
     const [histories, setHistories] = useState<History[] | undefined>(undefined)
     const [activeHistory, setActiveHistory] = useState<number>(0)
     const [drawerData, setDrawerData] = useState<boolean>(false)
     const [openedToggle, { toggle }] = useDisclosure();
     const [opened, {open, close}] = useDisclosure(false);
+    const [totalScore, setTotalScore] = useState<null | number>(null)
     const location = useLocation();
+    const data: Record<string, any>[] = useLocation().state.slideScore.map((obj: SlideResult, idx: number) => ({
     const navigate = useNavigate();
-    const data: Record<string, any>[] = useLocation().state.map((obj: SlideResult, idx: number) => ({
         slide: "slide " + (idx + 1),
         score: obj.countPercentage
     }))
 
-    const dataSpeed: Record<string, any>[] = useLocation().state.map((obj: SlideResult, idx: number) => ({
+    const dataSpeed: Record<string, any>[] = useLocation().state.slideScore.map((obj: SlideResult, idx: number) => ({
         slide: "slide " + (idx + 1),
         score: obj.countFastSpeed
     }))
 
-    const countPages = location.state.length;
+    const totalElapsedMilliSeconds: number = useLocation().state.slideScore.map((obj: SlideResult) => obj.elapsedTime).reduce((acc: number, cur: number) => acc + cur)
+    const totalElapsed = Math.floor(totalElapsedMilliSeconds / 1000)
+    const timerArr = presentationTime.split(":")
+    const targetSeconds = Number(timerArr[0]) * 60 + Number(timerArr[1])
+    const timeScore = 100 - Math.abs(targetSeconds - totalElapsed)
 
-    const totalEye = location.state.map((obj: SlideResult) => {
+    const countPages = location.state.slideScore.length;
+
+    const totalEye = location.state.slideScore.map((obj: SlideResult) => {
         return obj.countPercentage
     }).reduce((acc: number, cur: number) => acc + cur, 0)
 
     const eyeScore = Math.floor(totalEye / countPages);
 
-    const totalSpeed = location.state.map((obj: SlideResult) => {
+    const totalSpeed = location.state.slideScore.map((obj: SlideResult) => {
         return obj.countFastSpeed
     }).reduce((acc: number, cur: number) => acc + cur, 0)
 
     const speedScore = Math.floor(totalSpeed / countPages);
 
+    const volumeScore = Math.floor(volumes.reduce((acc: number, cur: number) => acc + cur) / volumes.length)
+    const volumeBarData = volumes.map((slideVolumeScore, idx) => ({
+        slide: "slide " + (idx + 1),
+        score: slideVolumeScore
+    }))
+
+    const fillersScore = Math.floor(fillers.reduce((acc: number, cur: number) => acc + cur) / fillers.length)
+    const fillerBarData = fillers.map((slideFillerScore, idx) => ({
+        slide: "slide " + (idx + 1),
+        score: slideFillerScore
+    }))
+
     const scoreData = [
         {product: '目線', 今回の結果: eyeScore, 目標: 80},
         {product: '速度', 今回の結果: speedScore, 目標: 80},
-        {product: 'ハキハキ', 今回の結果: 40, 目標: 80},
-        {product: '時間', 今回の結果: 90, 目標: 80},
-        {product: '繋ぎ言葉', 今回の結果: 100, 目標: 80}
+        {product: 'ハキハキ', 今回の結果: volumeScore, 目標: 80},
+        {product: '時間', 今回の結果: timeScore, 目標: 80},
+        {product: '繋ぎ言葉', 今回の結果: fillersScore, 目標: 80}
     ]
 
     useEffect(() => {
@@ -89,19 +110,28 @@ const Result: FC<Props> = ({userId, fillers, volumes}) => {
         }
     }
 
-    // setTimeout(async () => {
-    //     const res = await axios.post("/api/histories", {
-    //         title: "prapre",
-    //         startTime: 1719904090394,
-    //         userId: 1,
-    //         scoreEye: 50,
-    //         scoreVolume: 68,
-    //         scoreFiller: 5,
-    //         scoreSpeed: 60,
-    //         scoreTime: 70
-    //     });
-    //     console.log(res);
-    // }, 5000)
+    useEffect(() => {
+        (async () => {
+            try {
+                if (fillers.length === volumes.length && userId) {
+                    setTotalScore(Math.floor((eyeScore + volumeScore + fillersScore + speedScore + timeScore) / 5))
+                    const res = await axios.post("/api/histories", {
+                        title: slide.name,
+                        startTime: location.state.starttime,
+                        userId: userId,
+                        scoreEye: eyeScore,
+                        scoreVolume: volumeScore,
+                        scoreFiller: fillersScore,
+                        scoreSpeed: speedScore,
+                        scoreTime: timeScore
+                    });
+                    console.log(res);
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        })()
+    }, [fillers, volumes]);
 
     return (
         <>
@@ -174,6 +204,10 @@ const Result: FC<Props> = ({userId, fillers, volumes}) => {
                                 withLegend
                     />
                 }
+                <Box w="300px">
+                    {totalScore && <h2>{totalScore}点</h2>}
+                    <h2>{Math.floor(totalElapsed / 60)}:{totalElapsed % 60}</h2>
+                </Box>
             </Center>
             <Flex gap="70px" p="10px" justify="center" align="center">
                 <Button leftSection={<FaRedo/>}>
@@ -193,11 +227,11 @@ const Result: FC<Props> = ({userId, fillers, volumes}) => {
                              active>
                         <OneBarChart key="eye" graphTitle="目線がカメラを向いているか" slideScore={data}/>
                         <OneBarChart key="speed" graphTitle="話す速度" slideScore={dataSpeed}/>
+                        <OneBarChart key="volume" graphTitle="ハキハキ" slideScore={volumeBarData}/>
+                        <OneBarChart key="filler" graphTitle="繋ぎ言葉" slideScore={fillerBarData}/>
                     </NavLink>
                 </Box>
             </Center>
-            {JSON.stringify(fillers)}
-            {JSON.stringify(volumes)}
         </>
     )
 }
