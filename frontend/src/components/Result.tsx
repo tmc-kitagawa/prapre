@@ -31,8 +31,8 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
     const [opened, {open, close}] = useDisclosure(false);
     const [totalScore, setTotalScore] = useState<null | number>(null)
     const location = useLocation();
-    const data: Record<string, any>[] = useLocation().state.slideScore.map((obj: SlideResult, idx: number) => ({
     const navigate = useNavigate();
+    const data: Record<string, any>[] = useLocation().state.slideScore.map((obj: SlideResult, idx: number) => ({
         slide: "slide " + (idx + 1),
         score: obj.countPercentage
     }))
