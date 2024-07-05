@@ -5,8 +5,9 @@ import {useNavigate} from "react-router-dom";
 import {docLoad} from "../utils/calibration";
 import {startbutton, sr} from "../utils/speed_meter_script"
 import {SlideResult} from "../global";
-import {startAmivoice, stopAmivoice} from "../utils/amivoice.ts";
-import {VolumeMeter} from "./VolumeMeter.tsx";
+import {startAmivoice, stopAmivoice} from "../utils/amivoice";
+import {VolumeMeter} from "./VolumeMeter";
+import Timer from "./Timer";
 
 import PdfViewer from "./PdfViewer";
 import {pdfjs} from 'react-pdf';
@@ -47,6 +48,7 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
     let slideStartTime: MutableRefObject<number> = useRef(0)
     let countPercentage: MutableRefObject<number> = useRef(0)
     let elapsedTime: MutableRefObject<number> = useRef(0)
+    let startUnixTime: MutableRefObject<number> = useRef(0)
 
     const webgazer = window.webgazer;
 
@@ -87,6 +89,7 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
             countAll.current = 0;
             countFastSpeed.current = 0;
             slideStartTime.current = Number(new Date());
+            startUnixTime.current = Number(new Date());
             startAmivoice()
         }
 
@@ -134,7 +137,7 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
 
     useEffect(() => {
         if (end && !slided) {
-        navigate("/result", {state: arrSlideResult})
+        navigate("/result", {state: {slideScore: arrSlideResult, starttime: startUnixTime.current}})
         }
     }, [end, slided]);
 
@@ -211,7 +214,7 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
                                 }}>start</Button>}
                             </Box>
                             <svg xmlns="http://www.w3.org/2000/svg"></svg>
-                            {presentationTime}
+                            <Timer presentationTime={presentationTime} started={started} />
                             <div style={{width: "500px", height: "200px"}} className='chart-container'>
                                 <canvas id="myChart"></canvas>
                             </div>

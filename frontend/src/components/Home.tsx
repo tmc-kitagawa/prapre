@@ -94,7 +94,7 @@ const Home: FC<Props> = ({setUserId, slide, setSlide, setPresentationTime}) => {
                         </Document>}
                     </form>
                 </div>
-                <Signout />
+                <Signout/>
             </div>
         </>
     )
