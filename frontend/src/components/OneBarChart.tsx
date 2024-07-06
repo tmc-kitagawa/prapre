@@ -1,7 +1,7 @@
 // import {FC} from "react";
 // import {SlideScore} from "../global";
 import {BarChart} from '@mantine/charts';
-import {Center} from "@mantine/core";
+import {Center, Divider} from "@mantine/core";
 
 export interface Props {
     graphTitle: string,
@@ -38,6 +38,7 @@ const OneBarChart = (props:Props) => {
                     ]}
                 />
             </Center>
+            <Divider my="md" />
         </>
     )
 }

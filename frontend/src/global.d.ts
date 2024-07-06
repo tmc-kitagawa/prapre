@@ -17,3 +17,14 @@ export interface History {
      scoreSpeed: number,
      scoreTime: number
 }
+
+export interface ScoreData {
+    title: string,
+    startTime: number,
+    userId: number | null,
+    scoreEye: number,
+    scoreVolume: number,
+    scoreFiller: number,
+    scoreSpeed: number,
+    scoreTime: number
+}

@@ -9,6 +9,7 @@ import '@mantine/charts/styles.css';
 import {FaRegChartBar, FaHistory, FaSignOutAlt, FaHome, FaRedo, FaUser} from "react-icons/fa";
 
 import OneBarChart from "./OneBarChart.tsx";
+import {fbComment} from "../utils/FbComment.ts";
 
 import axios from "axios";
 import "moment/dist/locale/ja"
@@ -30,6 +31,7 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
     const [openedToggle, { toggle }] = useDisclosure();
     const [opened, {open, close}] = useDisclosure(false);
     const [totalScore, setTotalScore] = useState<null | number>(null)
+    const [Comment, setComment] = useState<null | string>(null)
     const location = useLocation();
     const navigate = useNavigate();
     const data: Record<string, any>[] = useLocation().state.slideScore.map((obj: SlideResult, idx: number) => ({
@@ -46,7 +48,7 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
     const totalElapsed = Math.floor(totalElapsedMilliSeconds / 1000)
     const timerArr = presentationTime.split(":")
     const targetSeconds = Number(timerArr[0]) * 60 + Number(timerArr[1])
-    const timeScore = 100 - Math.abs(targetSeconds - totalElapsed)
+    const timeScore = Math.max(100 - Math.abs(targetSeconds - totalElapsed), 0)
 
     const countPages = location.state.slideScore.length;
 
@@ -115,7 +117,7 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
             try {
                 if (fillers.length === volumes.length && userId) {
                     setTotalScore(Math.floor((eyeScore + volumeScore + fillersScore + speedScore + timeScore) / 5))
-                    const res = await axios.post("/api/histories", {
+                    const scoreData = {
                         title: slide.name,
                         startTime: location.state.starttime,
                         userId: userId,
@@ -124,7 +126,9 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
                         scoreFiller: fillersScore,
                         scoreSpeed: speedScore,
                         scoreTime: timeScore
-                    });
+                    };
+                    setComment(fbComment(scoreData))
+                    const res = await axios.post("/api/histories", scoreData);
                     console.log(res);
                 }
             } catch (err) {
@@ -206,7 +210,8 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
                 }
                 <Box w="300px">
                     {totalScore && <h2>{totalScore}点</h2>}
-                    <h2>{Math.floor(totalElapsed / 60)}:{totalElapsed % 60}</h2>
+                    <h2>{`${String(Math.floor(totalElapsed / 60)).padStart(2, "0")}:${String(totalElapsed % 60).padStart(2, "0")}`}</h2>
+                    {Comment && <p>{Comment}</p>}
                 </Box>
             </Center>
             <Flex gap="70px" p="10px" justify="center" align="center">
