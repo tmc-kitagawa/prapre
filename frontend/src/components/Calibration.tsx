@@ -1,4 +1,4 @@
-import {useEffect, useState, memo, MutableRefObject, useRef} from "react";
+import React, {useEffect, useState, memo, MutableRefObject, useRef} from "react";
 import "./Calibration.scss";
 import {Restart} from "../utils/main"
 import {useNavigate} from "react-router-dom";
@@ -8,12 +8,13 @@ import {SlideResult} from "../global";
 import {startAmivoice, stopAmivoice} from "../utils/amivoice";
 import {VolumeMeter} from "./VolumeMeter";
 import Timer from "./Timer";
+import {PointCalibrate} from "../utils/calibration"
 
 import PdfViewer from "./PdfViewer";
 import {pdfjs} from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-import {Flex, Box, Group, ActionIcon} from '@mantine/core'
+import {Flex, Box, Group, ActionIcon, Progress, Center} from '@mantine/core'
 import {FaRegPlayCircle, FaRegStopCircle} from "react-icons/fa"
 
 declare global {
@@ -41,6 +42,7 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
     const [arrSlideResult, setArrSlideResult] = useState<SlideResult[]>([])
     const [slided, setSlided] = useState(false)
     const [end, setEnd] = useState(false)
+    const [yellowPoints, setYellowPoints] = useState(PointCalibrate)
 
     let countFastSpeed: MutableRefObject<number> = useRef(0)
     let countVariable: MutableRefObject<number> = useRef(0);
@@ -95,6 +97,12 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
 
     }, [started]);
 
+    useEffect(() => {
+        if (end && !slided) {
+            navigate("/result", {state: {slideScore: arrSlideResult, starttime: startUnixTime.current}})
+        }
+    }, [end, slided]);
+
     const slideHandle = () => {
         setSlided(true)
         countPercentage.current = Math.floor((countVariable.current * 100) / countAll.current);
@@ -135,11 +143,11 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
         setArrSlideResult(prev => [...prev, resultObj])
     }
 
-    useEffect(() => {
-        if (end && !slided) {
-        navigate("/result", {state: {slideScore: arrSlideResult, starttime: startUnixTime.current}})
+    const yellowPointHandle = () => {
+        if (PointCalibrate !== yellowPoints) {
+            setYellowPoints(PointCalibrate)
         }
-    }, [end, slided]);
+    }
 
     return (
         <>
@@ -172,15 +180,15 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
                 </div>
             </nav>
             <div className="calibrationDiv">
-                <input type="button" className="Calibration" id="Pt1"></input>
-                <input type="button" className="Calibration" id="Pt2"></input>
-                <input type="button" className="Calibration" id="Pt3"></input>
-                <input type="button" className="Calibration" id="Pt4"></input>
-                <input type="button" className="Calibration" id="Pt5"></input>
-                <input type="button" className="Calibration" id="Pt6"></input>
-                <input type="button" className="Calibration" id="Pt7"></input>
-                <input type="button" className="Calibration" id="Pt8"></input>
-                <input type="button" className="Calibration" id="Pt9"></input>
+                <input type="button" className="Calibration" id="Pt1" onClick={yellowPointHandle}></input>
+                <input type="button" className="Calibration" id="Pt2" onClick={yellowPointHandle}></input>
+                <input type="button" className="Calibration" id="Pt3" onClick={yellowPointHandle}></input>
+                <input type="button" className="Calibration" id="Pt4" onClick={yellowPointHandle}></input>
+                <input type="button" className="Calibration" id="Pt5" onClick={yellowPointHandle}></input>
+                <input type="button" className="Calibration" id="Pt6" onClick={yellowPointHandle}></input>
+                <input type="button" className="Calibration" id="Pt7" onClick={yellowPointHandle}></input>
+                <input type="button" className="Calibration" id="Pt8" onClick={yellowPointHandle}></input>
+                <input type="button" className="Calibration" id="Pt9" onClick={yellowPointHandle}></input>
             </div>
 
             <div id="helpModal" className="modal fade" role="dialog">
@@ -196,7 +204,6 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
                                     data-bs-dismiss="modal">Close & load saved model
                             </button>
                             <button type="button" id='start_calibration' className="btn btn-primary"
-                                // data-bs-dismiss="modal" onClick={() => console.log("aaa")}>Calibrate
                                     data-bs-dismiss="modal" onClick={() => Restart()}>Calibrate
                             </button>
                         </div>
@@ -204,6 +211,7 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
 
                 </div>
             </div>
+
 
             {calibrated ?
                 <>
@@ -237,7 +245,10 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
                     </Flex>
 
                 </>
-                : null}
+                :
+                <Center>
+                    <Progress value={ yellowPoints * 100 / 9 } w="1000px" />
+                </Center>}
         </>
     );
 })
