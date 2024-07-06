@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {forwardRef, useImperativeHandle} from 'react';
 import {Document, Page, pdfjs} from 'react-pdf';
 import './PdfViewer.scss'
 import {Center, Progress} from "@mantine/core";
@@ -11,7 +11,11 @@ interface Props {
     started: boolean;
 }
 
-const PdfViewer: React.FC<Props> = ({file, slideHandle, started}) => {
+interface ChangePageHandle {
+    changePage(arg: number): void;
+}
+
+const PdfViewer = forwardRef<ChangePageHandle, Props>(({file, slideHandle, started}, ref) => {
     const [numPages, setNumPages] = React.useState(0);
     const [pageNumber, setPageNumber] = React.useState(1);
 
@@ -20,13 +24,18 @@ const PdfViewer: React.FC<Props> = ({file, slideHandle, started}) => {
         setNumPages(numPages);
     };
 
-    // ページ番号を変更する
     const changePage = (offset: number) => {
         if (offset === 1 && pageNumber >= 1 && pageNumber < numPages) {
             slideHandle()
             setPageNumber((prevPageNumber) => prevPageNumber + offset);
         }
-    };
+    }
+
+    useImperativeHandle(ref, () => ({
+        changePage
+    }))
+    // ページ番号を変更する(
+
 
     // デバッグ中
     // useEffect(() => {
@@ -51,6 +60,6 @@ const PdfViewer: React.FC<Props> = ({file, slideHandle, started}) => {
             </Center>
         </>
     );
-};
+});
 
 export default PdfViewer;

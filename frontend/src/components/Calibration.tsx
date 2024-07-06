@@ -1,4 +1,4 @@
-import React, {useEffect, useState, memo, MutableRefObject, useRef} from "react";
+import React, {useEffect, useState, memo, MutableRefObject, useRef, useCallback} from "react";
 import "./Calibration.scss";
 import {Restart} from "../utils/main"
 import {useNavigate} from "react-router-dom";
@@ -35,6 +35,11 @@ interface Props {
     setVolumes: React.Dispatch<React.SetStateAction<number[]>>
 }
 
+interface ChangePageHandle {
+    changePage(arg: number): void;
+}
+
+
 const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolumes}) => {
     const navigate = useNavigate()
     const [calibrated, setCalibrated] = useState(false)
@@ -51,8 +56,21 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
     let countPercentage: MutableRefObject<number> = useRef(0)
     let elapsedTime: MutableRefObject<number> = useRef(0)
     let startUnixTime: MutableRefObject<number> = useRef(0)
+    const pdfViewerRef = useRef<ChangePageHandle>(null)
 
     const webgazer = window.webgazer;
+
+    const keyDownEvent = useCallback ((event: any) => {
+        if (event.key === 'ArrowDown' || event.key === ' ' || event.key === 'Enter' || event.key === 'ArrowRight') {
+            pdfViewerRef.current?.changePage(1)
+        }
+    },[])
+
+    const startEnterEvent = useCallback((event:any) => {
+        if (event.key === 'Enter') {
+            setStarted(true)
+        }
+    }, [])
 
     useEffect(() => {
         docLoad(setCalibrated);
@@ -82,6 +100,7 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
     useEffect(() => {
         if (calibrated) {
             startbutton()
+            window.addEventListener("keydown", startEnterEvent)
         }
     }, [calibrated]);
 
@@ -93,6 +112,9 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
             slideStartTime.current = Number(new Date());
             startUnixTime.current = Number(new Date());
             startAmivoice()
+
+            window.removeEventListener('keydown', startEnterEvent)
+            window.addEventListener('keydown', keyDownEvent)
         }
 
     }, [started]);
@@ -133,14 +155,13 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
 
         setEnd(true)
 
-        console.log(arrSlideResult);
-
         const resultObj = {
             countPercentage: countPercentage.current,
             elapsedTime: elapsedTime.current,
             countFastSpeed: Math.floor((countAll.current - countFastSpeed.current) * 100 / countAll.current)
         }
         setArrSlideResult(prev => [...prev, resultObj])
+        window.removeEventListener('keydown', keyDownEvent)
     }
 
     const yellowPointHandle = () => {
@@ -241,7 +262,17 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
                                 <canvas id="myChart"></canvas>
                             </div>
                         </Group>
-                        <PdfViewer file={slide} slideHandle={slideHandle} started={started}/>
+                        <Center>
+                            {!started ?
+                                <p>再生ボタンをクリックするか、Enterキーを押して、練習を開始してください。</p>
+                                :
+                                (<div>
+                                <p>ページをクリックするか、右矢印／下矢印／Enterキー／スペースキーを押すと、ページをめくれます。</p>
+                                <p>停止ボタンをクリックすると、練習を終了して結果画面に移動します。</p>
+                                </div>)
+                            }
+                        </Center>
+                        <PdfViewer ref={pdfViewerRef} file={slide} slideHandle={slideHandle} started={started}/>
                     </Flex>
 
                 </>
