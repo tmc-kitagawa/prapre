@@ -495,7 +495,7 @@ let config = {
         }, {
             label: '',//平均値
             backgroundColor: color(chartColors.green).alpha(0).rgbString(),
-            borderColor: 'rgb(255,255,255)',
+            borderColor: '#F4F4F4',
             fill: false,
             cubicInterpolationMode: 'monotone',
             data: []

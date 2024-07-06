@@ -231,3 +231,5 @@ export const PopUpInstruction = () =>{
     });
 
 }
+
+export {PointCalibrate}
