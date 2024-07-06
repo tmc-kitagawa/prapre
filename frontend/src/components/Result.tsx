@@ -8,8 +8,8 @@ import {useDisclosure} from "@mantine/hooks";
 import '@mantine/charts/styles.css';
 import {FaRegChartBar, FaHistory, FaSignOutAlt, FaHome, FaRedo, FaUser} from "react-icons/fa";
 
-import OneBarChart from "./OneBarChart.tsx";
-import {fbComment} from "../utils/FbComment.ts";
+import OneBarChart from "./OneBarChart";
+import {fbComment} from "../utils/FbComment";
 
 import axios from "axios";
 import "moment/dist/locale/ja"

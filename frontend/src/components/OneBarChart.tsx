@@ -1,7 +1,8 @@
 // import {FC} from "react";
 // import {SlideScore} from "../global";
 import {BarChart} from '@mantine/charts';
-import {Center, Divider} from "@mantine/core";
+import {Box, Center} from "@mantine/core";
+
 
 export interface Props {
     graphTitle: string,
@@ -9,10 +10,10 @@ export interface Props {
     // slideScore: SlideScore
 }
 
-const OneBarChart = (props:Props) => {
+const OneBarChart = (props: Props) => {
     const {graphTitle, slideScore} = props;
     return (
-        <>
+        <Box bg="#FFFFFF" m="0.5rem" p="1rem" style={{ '--radius': '0.5rem',borderRadius: 'var(--radius)'}}>
             <Center>
                 <p>{graphTitle}</p>
             </Center>
@@ -22,9 +23,7 @@ const OneBarChart = (props:Props) => {
                     w={700}
                     data={slideScore}
                     dataKey="slide"
-                    // type="stacked"
-                    // withLegend
-                    yAxisProps={{ domain: [0, 100] }}
+                    yAxisProps={{domain: [0, 100]}}
                     referenceLines={[
                         {
                             y: 80,
@@ -38,8 +37,7 @@ const OneBarChart = (props:Props) => {
                     ]}
                 />
             </Center>
-            <Divider my="md" />
-        </>
+        </Box>
     )
 }
 
