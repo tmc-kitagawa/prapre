@@ -28,6 +28,6 @@ const Timer = memo<Props>(({presentationTime, started}) => {
         }
     }, [started]);
 
-    return <p>{remainingTime}</p>
+    return <h1 style={{fontSize: "64px"}}>{remainingTime}</h1>
 })
 export default Timer;
