@@ -1,0 +1,33 @@
+.prapre-container {
+  display: inline-block;
+  position: relative;
+  width: 100vw;
+  height: 70vh;
+  margin-left: calc(50% - 50vw);
+  margin-top: calc(50% - 50vw);
+  background-color: #FF3057;
+  clip-path: ellipse(60% 93% at 20% 0%);
+
+  h1 {
+    position: absolute;
+    bottom: 20%;
+    left: 5%;
+    font-size: 100px;
+  }
+
+  p {
+    position: absolute;
+    bottom: 10%;
+    left: 5%;
+    font-size: 50px;
+    color: #BBBBBB;
+  }
+}
+
+.prapre-mask {
+  position: absolute;
+  width: 80%;
+  height: 70%;
+  background-color: #F4F4F4;
+  clip-path: ellipse(60% 93% at 20% -5%);
+}

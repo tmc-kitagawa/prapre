@@ -12,6 +12,7 @@ import {PdfDropzone} from "../components/PdfDropzone"
 import {Document, Page} from "react-pdf";
 import axios from "axios";
 import Signout from "./Signout";
+import './Home.scss'
 
 import {FaSignOutAlt, FaUser} from "react-icons/fa";
 import {useDisclosure} from "@mantine/hooks";
@@ -31,7 +32,7 @@ interface Props {
 
 const Home: FC<Props> = ({setUserId, slide, setSlide, setPresentationTime}) => {
     // const [opened, {open, close}] = useDisclosure(false);
-    const [opened, { toggle }] = useDisclosure();
+    const [opened, {toggle}] = useDisclosure();
     const ref = useRef<HTMLInputElement>(null);
     const navigate = useNavigate()
     const pickerControl = (
@@ -79,23 +80,28 @@ const Home: FC<Props> = ({setUserId, slide, setSlide, setPresentationTime}) => {
             <div>
                 <div>
                     <Flex p="10px" justify="space-between">
-                        <h1>PraPre</h1>
+                        <div className="prapre-container">
+                            <div className="prapre-mask"></div>
+                            <h1>PraPre</h1>
+                            <p>Practice for Presentations</p>
+                        </div>
                         <Menu shadow="md" width={200}>
-                        <Menu.Target>
-                            {/*<Button>button</Button>*/}
-                            <Burger size="lg" opened={opened} onClick={toggle} aria-label="Toggle navigation" />
-                        </Menu.Target>
+                            <Menu.Target>
+                                {/*<Button>button</Button>*/}
+                                <Burger size="lg" opened={opened} onClick={toggle} aria-label="Toggle navigation"/>
+                            </Menu.Target>
                             <Menu.Dropdown>
                                 <Menu.Item leftSection={<FaUser/>}>
                                     アカウント
                                 </Menu.Item>
-                                <Menu.Item onClick={() => {<Signout/>}}  leftSection={ <FaSignOutAlt/>} >
+                                <Menu.Item onClick={() => {
+                                    <Signout/>
+                                }} leftSection={<FaSignOutAlt/>}>
                                     サインアウト
                                 </Menu.Item>
                             </Menu.Dropdown>
                         </Menu>
                     </Flex>
-                    <p>Practice for Presentations</p>
                 </div>
 
                 <div>

@@ -46,9 +46,9 @@ export const PdfDropzone : FC<Props> = (props) => {
                     <Text size="xl" inline>
                         PDFファイルをドラッグ&ドロップ
                     </Text>
-                    <Text size="sm" c="dimmed" inline mt={7}>
-                        Attach as many files as you like, each file should not exceed 5mb
-                    </Text>
+                    {/*<Text size="sm" c="dimmed" inline mt={7}>*/}
+                    {/*    Attach as many files as you like, each file should not exceed 5mb*/}
+                    {/*</Text>*/}
                 </div>
             </Group>
         </Dropzone>
