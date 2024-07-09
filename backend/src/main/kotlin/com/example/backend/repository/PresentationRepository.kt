@@ -36,7 +36,7 @@ class PresentationRepository(
     }
 
     fun getPresentationsOfUser(userid: Long): List<Presentation> {
-        return jdbcTemplate.query("SELECT * FROM presentations WHERE user_id = ?", presentationRowMapper, userid)
+        return jdbcTemplate.query("SELECT * FROM presentations WHERE user_id = ? ORDER BY starttime DESC", presentationRowMapper, userid)
     }
 
     fun insertHistory(request: Request): String {

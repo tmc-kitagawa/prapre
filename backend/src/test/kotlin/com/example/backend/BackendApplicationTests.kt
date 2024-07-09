@@ -35,7 +35,7 @@ class BackendApplicationTests(
 		val response = restTemplate.getForEntity("http://localhost:$port/api/presentations", Array<Presentation>::class.java)
 		assertThat(response.headers.contentType, equalTo(MediaType.APPLICATION_JSON))
 		val presentations = response.body!!
-		assertThat(presentations.size, equalTo(2))
+		assertThat(presentations.size, equalTo(5))
 		assertThat(presentations[0].id, equalTo(1))
 		assertThat(presentations[0].title, equalTo("firstTitle"))
 		assertThat(presentations[1].id, equalTo(2))
@@ -55,6 +55,16 @@ class BackendApplicationTests(
 		assertThat(presentations.size, equalTo(1))
 		assertThat(presentations[0].id, equalTo(3))
 		assertThat(presentations[0].title, equalTo("thirdTitle"))
+	}
+
+	@Test
+	fun `GET-userIdリクエストはPresentationsオブジェクトを降順で返す`() {
+		val response = restTemplate.getForEntity("http://localhost:$port/api/presentations/1", Array<Presentation>::class.java)
+		assertThat(response.headers.contentType, equalTo(MediaType.APPLICATION_JSON))
+		val presentations = response.body!!
+		assertThat(presentations.size, equalTo(2))
+		assertThat(presentations[0].id, equalTo(2))
+		assertThat(presentations[0].title, equalTo("secondTitle"))
 	}
 
 	@Test
