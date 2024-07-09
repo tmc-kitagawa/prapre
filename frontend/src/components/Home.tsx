@@ -105,27 +105,29 @@ const Home: FC<Props> = ({setUserId, slide, setSlide, setPresentationTime}) => {
                 </div>
 
                 <div>
+                    <Flex direction="column" align="center">
+                        <div className="drop-container" style={{width: "80%"}}>
+                            {slide && (
+                                <div className="thumnail-container">
+                                <Document file={slide}>
+                                    <Page width={200} pageNumber={1}/>
+                                </Document>
+                                </div>
+                            )}
+                            <PdfDropzone setSlide={setSlide}/>
+                        </div>
+
                     <form onSubmit={form.onSubmit(submitHandler)}>
-                        <TimeInput
-                            withAsterisk
-                            label="アイコンをクリックして時間を入力してください" ref={ref}
-                            rightSection={pickerControl} key={form.key('time')}
-                            {...form.getInputProps('time')}/>
-                        {/*<TextInput*/}
-                        {/*    withAsterisk*/}
-                        {/*    label="埋め込みコード"*/}
-                        {/*    placeholder="埋め込みコードを入力"*/}
-                        {/*    key={form.key('code')}*/}
-                        {/*    {...form.getInputProps('code')}*/}
-                        {/*/>*/}
-                        <PdfDropzone setSlide={setSlide}/>
                         <Group justify="flex-end" mt="md">
+                            <TimeInput
+                                ref={ref}
+                                // label="アイコンをクリックして時間を入力してください" ref={ref}
+                                rightSection={pickerControl} key={form.key('time')}
+                                {...form.getInputProps('time')}/>
                             <Button type="submit" w="150px" h="25px">すすむ</Button>
                         </Group>
-                        {slide && <Document file={slide}>
-                            <Page width={200} pageNumber={1}/>
-                        </Document>}
                     </form>
+                    </Flex>
                 </div>
             </div>
         </>
