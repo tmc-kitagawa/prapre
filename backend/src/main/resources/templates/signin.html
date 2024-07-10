@@ -6,7 +6,14 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<h2>ようこそ</h2>
+<div class="prapre-wrapper">
+    <div class="prapre-container">
+        <div class="prapre-mask"></div>
+        <h1>PraPre</h1>
+        <p>Practice for Presentations</p>
+    </div>
+    <div class="box"></div>
+</div>
 <form action="#" th:action="@{/signin}" method="post">
     <div>
         <label for="usernameInput"></label>
@@ -19,8 +26,6 @@
     <div class="error-message" th:if="${param.error}">
         <p>ユーザー名もしくはパスワードが違います</p>
     </div>
-    <br>
-    <br>
     <div>
         <button type="submit">サインイン</button>
     </div>

@@ -3,7 +3,7 @@ html, body {
 }
 
 body {
-    background-color: white;
+    background-color: #F4F4F4;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -27,9 +27,55 @@ button {
     color: white;
 }
 
-a,h2 {
+a, h2 {
     color: black;
 }
+
 .error-message {
     color: red;
+}
+
+.prapre-wrapper {
+    display: flex;
+    width: 100%;
+    height: 80%;
+}
+
+.box {
+    width: 5vw;
+}
+
+.prapre-container {
+    display: inline-block;
+    position: relative;
+    width: 100vw;
+    height: 70vh;
+    margin-left: calc(50% - 50vw);
+    margin-top: calc(50% - 50vw);
+    background-color: #FF3057;
+    clip-path: ellipse(60% 93% at 20% 7%);
+    opacity: 0.5;
+}
+
+.prapre-container h1 {
+    position: absolute;
+    bottom: 2%;
+    left: 5%;
+    font-size: 85px;
+}
+
+.prapre-container p {
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    font-size: 40px;
+    color: #BBBBBB;
+}
+
+.prapre-mask {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background-color: #F4F4F4;
+    clip-path: ellipse(60% 93% at 20% -5%);
 }

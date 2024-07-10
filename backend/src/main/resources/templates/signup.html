@@ -6,7 +6,14 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<h2>ようこそ</h2>
+<div class="prapre-wrapper">
+    <div class="prapre-container">
+        <div class="prapre-mask"></div>
+        <h1>PraPre</h1>
+        <p>Practice for Presentations</p>
+    </div>
+    <div class="box"></div>
+</div>
 <form action="#" th:action="@{/signup}" method="post">
     <div>
         <label for="usernameInput"></label>
@@ -16,8 +23,6 @@
         <label for="passwordInput"></label>
         <input type="password" name="password" id="passwordInput" placeholder="パスワード">
     </div>
-    <br>
-    <br>
     <div>
         <button type="submit">登録</button>
     </div>
