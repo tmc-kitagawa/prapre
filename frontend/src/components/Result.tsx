@@ -79,7 +79,7 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
     const scoreData = [
         {product: '目線', 今回の結果: eyeScore, 目標: 80},
         {product: '速度', 今回の結果: speedScore, 目標: 80},
-        {product: 'ハキハキ', 今回の結果: volumeScore, 目標: 80},
+        {product: '声の大きさ', 今回の結果: volumeScore, 目標: 80},
         {product: '時間', 今回の結果: timeScore, 目標: 80},
         {product: '繋ぎ言葉', 今回の結果: fillersScore, 目標: 80}
     ]
@@ -152,7 +152,7 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
                                  label={<RadarChart h={80}
                                                     data={[{product: '目線', score: history.scoreEye},
                                                         {product: '速度', score: history.scoreSpeed,},
-                                                        {product: 'ハキハキ', score: history.scoreVolume},
+                                                        {product: '声の大きさ', score: history.scoreVolume},
                                                         {product: '時間', score: history.scoreTime,},
                                                         {product: '繋ぎ言葉', score: history.scoreFiller}]}
                                                     dataKey="product"
@@ -231,9 +231,9 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
                     <NavLink leftSection={<FaRegChartBar/>} label="結果の詳細を表示" defaultOpened color="blue.5"
                              active>
                         <OneBarChart key="eye" graphTitle="目線がカメラを向いているか" slideScore={data}/>
-                        <OneBarChart key="speed" graphTitle="話す速度" slideScore={dataSpeed}/>
-                        <OneBarChart key="volume" graphTitle="ハキハキ" slideScore={volumeBarData}/>
-                        <OneBarChart key="filler" graphTitle="繋ぎ言葉" slideScore={fillerBarData}/>
+                        <OneBarChart key="speed" graphTitle="話す速度が適切か" slideScore={dataSpeed}/>
+                        <OneBarChart key="volume" graphTitle="声の大きさが十分か" slideScore={volumeBarData}/>
+                        <OneBarChart key="filler" graphTitle="繋ぎ言葉が多すぎないか" slideScore={fillerBarData}/>
                     </NavLink>
                 </Box>
             </Center>
