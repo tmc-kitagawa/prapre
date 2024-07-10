@@ -46,8 +46,8 @@ function calcAccuracy(setCalibrated) {
     // show modal
     // notification for the measurement process
     swal({
-        title: "精度の計算",
-        text: "次の5秒間はマウスを動かさず、真ん中の点を凝視してください。これで予測の精度を計算することができます。",
+        title: "アイトラッキング準備の仕上げ",
+        text: "マウスを動かさずに\n真ん中の点を５秒間見つめてください。",
         closeOnEsc: false,
         allowOutsideClick: false,
         closeModal: true
@@ -63,10 +63,10 @@ function calcAccuracy(setCalibrated) {
                 var accuracyLabel = "<a>Accuracy | "+precision_measurement+"%</a>";
                 document.getElementById("Accuracy").innerHTML = accuracyLabel; // Show the accuracy in the nav bar.
                 swal({
-                    title: "アイトラッキングの準備が整いました。",
+                    title: "アイトラッキング準備完了",
                     allowOutsideClick: false,
                     buttons: {
-                        cancel: "Recalibrate",
+                        // cancel: "Recalibrate",
                         confirm: true,
                     }
                 }).then(isConfirm => {
@@ -219,8 +219,8 @@ export const docLoad = (setCalibrated)=>{
 export const PopUpInstruction = () =>{
     ClearCanvas();
     swal({
-        title:"アイトラッキングの準備をします",
-        text: "黄色になるまで赤い丸をクリックしてね！全部で9個あるよ",
+        title:"アイトラッキング準備",
+        text: "OKボタンを押すと９個の赤い丸が現れます。\n黄色になるまで赤い丸をクリックしてください。",
         buttons:{
             cancel: false,
             confirm: true
