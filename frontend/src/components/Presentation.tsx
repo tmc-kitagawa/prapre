@@ -1,5 +1,5 @@
 import React, {useEffect, useState, memo, MutableRefObject, useRef, useCallback} from "react";
-import "./Calibration.scss";
+import "./Presentation.scss";
 import {Restart} from "../utils/main"
 import {useNavigate} from "react-router-dom";
 import {docLoad} from "../utils/calibration";
@@ -262,16 +262,16 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
                                 <canvas id="myChart"></canvas>
                             </div>
                         </Group>
-                        <Center>
-                            {!started ?
-                                <p>再生ボタンをクリックするか、Enterキーを押して、練習を開始してください。</p>
-                                :
-                                (<div>
-                                <p>ページをクリックするか、右矢印／下矢印／Enterキー／スペースキーを押すと、ページをめくれます。</p>
-                                <p>停止ボタンをクリックすると、練習を終了して結果画面に移動します。</p>
-                                </div>)
-                            }
-                        </Center>
+                        {/*<Center>*/}
+                        {/*    {!started ?*/}
+                        {/*        <p>再生ボタンをクリックするか、Enterキーを押して、練習を開始してください。</p>*/}
+                        {/*        :*/}
+                        {/*        (<div>*/}
+                        {/*            <p>ページをクリックするか、右矢印／下矢印／Enterキー／スペースキーを押すと、ページをめくれます。</p>*/}
+                        {/*            <p>停止ボタンをクリックすると、練習を終了して結果画面に移動します。</p>*/}
+                        {/*        </div>)*/}
+                        {/*    }*/}
+                        {/*</Center>*/}
                         <PdfViewer ref={pdfViewerRef} file={slide} slideHandle={slideHandle} started={started}/>
                     </Flex>
 

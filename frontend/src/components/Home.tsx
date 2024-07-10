@@ -67,7 +67,7 @@ const Home: FC<Props> = ({setUserId, slide, setSlide, setPresentationTime}) => {
 
     const submitHandler = (values: Values) => {
         setPresentationTime(values.time)
-        navigate('/calibration')
+        navigate('/presentation')
     }
 
     return (
