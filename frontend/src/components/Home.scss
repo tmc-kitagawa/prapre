@@ -22,12 +22,26 @@
     font-size: 50px;
     color: #BBBBBB;
   }
+
+  .prapre-mask {
+    position: absolute;
+    width: 80%;
+    height: 70%;
+    background-color: #F4F4F4;
+    clip-path: ellipse(60% 93% at 20% -5%);
+  }
+
 }
 
-.prapre-mask {
-  position: absolute;
-  width: 80%;
-  height: 70%;
-  background-color: #F4F4F4;
-  clip-path: ellipse(60% 93% at 20% -5%);
+.drop-container {
+  position: relative;
+
+  .thumnail-container {
+    position: absolute;
+    z-index: 99999;
+    left: 5%;
+    top: 20%;
+  }
 }
+
+

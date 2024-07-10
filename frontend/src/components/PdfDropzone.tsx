@@ -22,7 +22,7 @@ export const PdfDropzone : FC<Props> = (props) => {
             accept={PDF_MIME_TYPE}
             {...props}
         >
-            <Group justify="center" gap="xl" mih={220} style={{ pointerEvents: 'none' }}>
+            <Group justify="center" gap="xl" mih={150} style={{ pointerEvents: 'none' }}>
                 <Dropzone.Accept>
                     <IconUpload
                         style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-blue-6)' }}
