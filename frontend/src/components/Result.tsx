@@ -1,8 +1,8 @@
-import  {FC, useEffect, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {SlideResult, History} from "../global";
 
-import {NavLink, Drawer, Button, Center, Box, Flex, Menu, Burger} from "@mantine/core";
+import {NavLink, Drawer, Button, Center, Box, Flex, Menu, Burger, Loader} from "@mantine/core";
 import {RadarChart} from '@mantine/charts';
 import {useDisclosure} from "@mantine/hooks";
 import '@mantine/charts/styles.css';
@@ -18,17 +18,19 @@ import Signout from "./Signout.tsx";
 
 interface Props {
     userId: number | null;
-    fillers: number[]
-    volumes: number[]
+    fillers: number[];
+    setFillers:  React.Dispatch<React.SetStateAction<number[]>>
+    volumes: number[];
+    setVolumes:  React.Dispatch<React.SetStateAction<number[]>>;
     presentationTime: string;
     slide: any;
 }
 
-const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) => {
+const Result: FC<Props> = ({userId, fillers, setFillers, volumes, setVolumes, presentationTime, slide}) => {
     const [histories, setHistories] = useState<History[] | undefined>(undefined)
     const [activeHistory, setActiveHistory] = useState<number>(0)
     const [drawerData, setDrawerData] = useState<boolean>(false)
-    const [openedToggle, { toggle }] = useDisclosure();
+    const [openedToggle, {toggle}] = useDisclosure();
     const [opened, {open, close}] = useDisclosure(false);
     const [totalScore, setTotalScore] = useState<null | number>(null)
     const [Comment, setComment] = useState<null | string>(null)
@@ -44,7 +46,7 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
         score: obj.countFastSpeed
     }))
 
-    const totalElapsedMilliSeconds: number = useLocation().state.slideScore.map((obj: SlideResult) => obj.elapsedTime).reduce((acc: number, cur: number) => acc + cur)
+    const totalElapsedMilliSeconds: number = useLocation().state.slideScore.map((obj: SlideResult) => obj.elapsedTime).reduce((acc: number, cur: number) => acc + cur, 0)
     const totalElapsed = Math.floor(totalElapsedMilliSeconds / 1000)
     const timerArr = presentationTime.split(":")
     const targetSeconds = Number(timerArr[0]) * 60 + Number(timerArr[1])
@@ -64,13 +66,13 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
 
     const speedScore = Math.floor(totalSpeed / countPages);
 
-    const volumeScore = Math.floor(volumes.reduce((acc: number, cur: number) => acc + cur) / volumes.length)
+    const volumeScore = Math.floor(volumes.reduce((acc: number, cur: number) => acc + cur, 0) / volumes.length)
     const volumeBarData = volumes.map((slideVolumeScore, idx) => ({
         slide: "slide " + (idx + 1),
         score: slideVolumeScore
     }))
 
-    const fillersScore = Math.floor(fillers.reduce((acc: number, cur: number) => acc + cur) / fillers.length)
+    const fillersScore = Math.floor(fillers.reduce((acc: number, cur: number) => acc + cur, 0) / fillers.length)
     const fillerBarData = fillers.map((slideFillerScore, idx) => ({
         slide: "slide " + (idx + 1),
         score: slideFillerScore
@@ -101,7 +103,7 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
         })()
     }, []);
 
-    const [mergedRadarData, setMergedRadarData] = useState<Record<string, any>[]>(scoreData);
+    const [mergedRadarData, setMergedRadarData] = useState<Record<string, any>[]>([scoreData]);
     const selectHistory = (idx: number) => {
         setActiveHistory(idx);
         if (histories) {
@@ -115,6 +117,9 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
     useEffect(() => {
         (async () => {
             try {
+                if (fillers.length === volumes.length) {
+                    setMergedRadarData(scoreData)
+                }
                 if (fillers.length === volumes.length && userId) {
                     setTotalScore(Math.floor((eyeScore + volumeScore + fillersScore + speedScore + timeScore) / 5))
                     const scoreData = {
@@ -143,7 +148,8 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
                 {drawerData ?
                     <>
                         <NavLink label={"ユーザーアカウント"} leftSection={<FaUser size="50px"/>}/>
-                        <NavLink label={"ログアウト"} leftSection={<FaSignOutAlt size="50px"><Signout/></FaSignOutAlt>}/>
+                        <NavLink label={"ログアウト"}
+                                 leftSection={<FaSignOutAlt size="50px"><Signout/></FaSignOutAlt>}/>
                     </>
                     : histories && histories.map((history, idx) => (
                     <div>
@@ -168,45 +174,49 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
                 <Menu shadow="md" width={200}>
                     <Menu.Target>
                         {/*<Button>button</Button>*/}
-                        <Burger size="lg" opened={openedToggle} onClick={toggle} aria-label="Toggle navigation" />
+                        <Burger size="lg" opened={openedToggle} onClick={toggle} aria-label="Toggle navigation"/>
                     </Menu.Target>
                     <Menu.Dropdown>
                         <Menu.Item leftSection={<FaUser/>}>
                             アカウント
                         </Menu.Item>
-                        <Menu.Item onClick={() => {<Signout/>}}  leftSection={ <FaSignOutAlt/>} >
+                        <Menu.Item onClick={() => {
+                            <Signout/>
+                        }} leftSection={<FaSignOutAlt/>}>
                             サインアウト
                         </Menu.Item>
                     </Menu.Dropdown>
                 </Menu>
             </Flex>
             <Center>
-                {mergedRadarData[0]["履歴"] ?
-                    <RadarChart h={500}
-                                w={500}
-                                data={mergedRadarData}
-                                dataKey="product"
-                                series={[
-                                    {name: '目標', color: 'rgba(255,255,255,1)', strokeColor: 'red', opacity: 0},
-                                    {name: '今回の結果', color: 'blue.4', strokeColor: 'blue', opacity: 0.2},
-                                    {name: '履歴', color: 'green.4', strokeColor: 'green', opacity: 0.2}
-                                ]}
-                                withPolarGrid
-                                withPolarAngleAxis
-                                withLegend
-                    /> :
-                    <RadarChart h={500}
-                                w={500}
-                                data={mergedRadarData}
-                                dataKey="product"
-                                series={[
-                                    {name: '目標', color: 'rgba(255,255,255,1)', strokeColor: 'red', opacity: 0},
-                                    {name: '今回の結果', color: 'blue.4', strokeColor: 'blue', opacity: 0.2}
-                                ]}
-                                withPolarGrid
-                                withPolarAngleAxis
-                                withLegend
-                    />
+                {fillers.length !== countPages ?
+                    <Loader color="blue" /> :
+                    mergedRadarData[0]["履歴"] ?
+                        <RadarChart h={500}
+                                    w={500}
+                                    data={mergedRadarData}
+                                    dataKey="product"
+                                    series={[
+                                        {name: '目標', color: 'rgba(255,255,255,1)', strokeColor: 'red', opacity: 0},
+                                        {name: '今回の結果', color: 'blue.4', strokeColor: 'blue', opacity: 0.2},
+                                        {name: '履歴', color: 'green.4', strokeColor: 'green', opacity: 0.2}
+                                    ]}
+                                    withPolarGrid
+                                    withPolarAngleAxis
+                                    withLegend
+                        /> :
+                        <RadarChart h={500}
+                                    w={500}
+                                    data={mergedRadarData}
+                                    dataKey="product"
+                                    series={[
+                                        {name: '目標', color: 'rgba(255,255,255,1)', strokeColor: 'red', opacity: 0},
+                                        {name: '今回の結果', color: 'blue.4', strokeColor: 'blue', opacity: 0.2}
+                                    ]}
+                                    withPolarGrid
+                                    withPolarAngleAxis
+                                    withLegend
+                        />
                 }
                 <Box w="300px">
                     {totalScore && <h2>{totalScore}点</h2>}
@@ -222,7 +232,11 @@ const Result: FC<Props> = ({userId, fillers, volumes, presentationTime, slide}) 
                     setDrawerData(false)
                     open()
                 }}>履歴を表示</Button>
-                <Button variant="default" leftSection={<FaHome/>} onClick={() => {navigate('/')}}>
+                <Button variant="default" leftSection={<FaHome/>} onClick={() => {
+                    setFillers([])
+                    setVolumes([])
+                    navigate('/')
+                }}>
                     ホームへ戻る
                 </Button>
             </Flex>

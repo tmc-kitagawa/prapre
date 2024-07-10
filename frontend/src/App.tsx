@@ -19,7 +19,7 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<Home setUserId={setUserId} slide={slide} setSlide={setSlide} setPresentationTime={setPresentationTime}/>}/>
                 <Route path="presentation" element={<Presentation slide={slide} presentationTime={presentationTime} setFillers={setFillers} setVolumes={setVolumes}/>}/>
-                <Route path="result" element={<Result userId={userId} fillers={fillers} volumes={volumes} presentationTime={presentationTime} slide={slide}/>}/>
+                <Route path="result" element={<Result userId={userId} fillers={fillers} setFillers={setFillers} volumes={volumes} setVolumes={setVolumes} presentationTime={presentationTime} slide={slide}/>}/>
             </Routes>
         </MantineProvider>
     )
