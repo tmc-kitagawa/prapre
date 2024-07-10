@@ -68,7 +68,7 @@ let predictCount_cb = 20;
 let divOffset_cb = 100;
 
 
-let fireCount = 7;
+let fireCount = 10;
 let sr = 0; //瞬間値
 let wfurl = "";
 let alerting = false;
