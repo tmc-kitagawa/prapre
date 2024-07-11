@@ -1,5 +1,11 @@
 # prapre
 
+デプロイ先URL
+
+※誰でも利用可能にするため、認証機能と履歴機能は無しで公開しています。
+
+[https://www.prapre.online](https://www.prapre.online)
+
 ### db 作成
 ターミナルで以下実行
 ```
@@ -18,3 +24,6 @@ DB_PASS=[your db user password here]
 ```
 VITE_APK_KEY=[your amivoice api key here]
 ```
+
+### AWSの構成図
+![AWS](./img/aws.png)
