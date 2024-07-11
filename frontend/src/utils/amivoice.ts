@@ -69,7 +69,7 @@ const exportWAV = function (audioData: Float32Array[], setFillers: React.Dispatc
     axios.post('https://acp-api.amivoice.com/v1/recognize', data).then(res => {
         console.log(res.data)
         const count = (res.data.text.match(/\%/g) || []).length * 3;
-        setFillers(prev => [...prev, Math.max(100 - count), 0])
+        setFillers(prev => [...prev, Math.max(100 - count, 0)])
     })
 };
 
