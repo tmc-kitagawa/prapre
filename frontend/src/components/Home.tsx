@@ -85,9 +85,9 @@ const Home: FC<Props> = ({setUserId, slide, setSlide, setPresentationTime}) => {
                             <h1>PraPre</h1>
                             <p>Practice for Presentations</p>
                         </div>
-                        <Menu shadow="md" width={200}>
+                        {/* <Menu shadow="md" width={200}>
                             <Menu.Target>
-                                {/*<Button>button</Button>*/}
+                                <Button>button</Button>
                                 <Burger size="lg" opened={opened} onClick={toggle} aria-label="Toggle navigation"/>
                             </Menu.Target>
                             <Menu.Dropdown>
@@ -100,7 +100,7 @@ const Home: FC<Props> = ({setUserId, slide, setSlide, setPresentationTime}) => {
                                     サインアウト
                                 </Menu.Item>
                             </Menu.Dropdown>
-                        </Menu>
+                        </Menu> */}
                     </Flex>
                 </div>
 
