@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { SlideResult } from "../global";
-
+import axios from 'axios';
 import { Flex, Loader, Space } from "@mantine/core";
 import "@mantine/charts/styles.css";
 
@@ -91,6 +91,7 @@ const Result: FC<Props> = ({
             scoreTime: timeScore,
           };
           setComment(fbComment(scoreData));
+          await axios.post("/api/histories", scoreData)
         }
       } catch (err) {
         console.log(err);
