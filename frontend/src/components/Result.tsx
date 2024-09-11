@@ -1,13 +1,14 @@
 import { FC, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { SlideResult } from "../global";
-import axios from 'axios';
+import axios from "axios";
 import { Flex, Loader, Space } from "@mantine/core";
 import "@mantine/charts/styles.css";
 
 import { fbComment } from "../utils/FbComment";
 
 import "moment/dist/locale/ja";
+import "./Result.scss";
 
 interface Props {
   userId: number | null;
@@ -91,7 +92,7 @@ const Result: FC<Props> = ({
             scoreTime: timeScore,
           };
           setComment(fbComment(scoreData));
-          await axios.post("/api/histories", scoreData)
+          await axios.post("/api/histories", scoreData);
         }
       } catch (err) {
         console.log(err);
@@ -134,120 +135,64 @@ const Result: FC<Props> = ({
         <Loader color="blue" />
       ) : (
         <>
-          <Flex
-            justify="flex-start"
-            align="flex-start"
-            direction="column"
-            wrap="wrap"
-          >
-            <p>あなたのプレゼンスタイル</p>
-            <p>お喋りマッチョコンサル</p>
-          </Flex>
-          <Flex
-            gap="md"
-            justify="space-around"
-            align="center"
-            direction="row"
-            wrap="wrap"
-          >
-            <Flex
-              justify="flex-start"
-              align="flex-start"
-              direction="column"
-              wrap="wrap"
-            >
-              <p>偏差値{totalScore}</p>
-              <Flex
-                justify="flex-start"
-                align="flex-start"
-                direction="column"
-                wrap="wrap"
-              >
-                <Flex w="100%" justify="space-between" direction="row">
-                  <p>できていない</p>
-                  <p>カメラ目線</p>
-                  <p>できている</p>
-                </Flex>
-                <Flex justify="flex-start" align="flex-start" gap="xs">
-                  {showBar(eyeScore)}
-                </Flex>
-              </Flex>
-              <Space h="xl" />
-              <Flex
-                justify="flex-start"
-                align="flex-start"
-                direction="column"
-                wrap="wrap"
-              >
-                <Flex w="100%" justify="space-between" direction="row">
-                  <p>早い</p>
-                  <p>話す速度</p>
-                  <p>適切</p>
-                </Flex>
-                <Flex justify="flex-start" align="flex-start" gap="xs">
-                  {showBar(speedScore)}
-                </Flex>
-              </Flex>
-              <Space h="xl" />
-
-              <Flex
-                justify="flex-start"
-                align="flex-start"
-                direction="column"
-                wrap="wrap"
-              >
-                <Flex w="100%" justify="space-between" direction="row">
-                  <p>小さい</p>
-                  <p>声の大きさ</p>
-                  <p>大きい</p>
-                </Flex>
-                <Flex justify="flex-start" align="flex-start" gap="xs">
-                  {showBar(volumeScore)}
-                </Flex>
-              </Flex>
-              <Space h="xl" />
-              <Flex
-                justify="flex-start"
-                align="flex-start"
-                direction="column"
-                wrap="wrap"
-              >
-                <Flex w="100%" justify="space-between" direction="row">
+          <div className="result-wrapper">
+            <div className="title-container">
+              <h2 className="title">あなたのプレゼンスタイル</h2>
+              <p className="presen-style">お喋りマッチョコンサル</p>
+            </div>
+            <div className="result-container">
+              <div className="indicator-wrapper">
+                <h3 className="deviation">
+                  偏差値 <span className="deviation-value">{totalScore}</span>
+                </h3>
+                <div className="indicator-container">
+                  <div className="indicator">
+                    <p>できていない</p>
+                    <h4>カメラ目線</h4>
+                    <p>できている</p>
+                  </div>
+                  <div className="bar">{showBar(eyeScore)}</div>
+                </div>
+                <div className="indicator-container">
+                  <div className="indicator">
+                    <p>早い</p>
+                    <h4>　話す速度</h4>
+                    <p>適切</p>
+                  </div>
+                  <div className="bar">{showBar(speedScore)}</div>
+                </div>
+                <div className="indicator-container">
+                  <div className="indicator">
+                    <p>小さい</p>
+                    <h4>　声の大きさ</h4>
+                    <p>大きい</p>
+                  </div>
+                  <div className="bar">{showBar(volumeScore)}</div>
+                </div>
+                <div className="indicator-container">
+                  <div className="indicator">
                   <p>多い</p>
-                  <p>繋ぎ言葉</p>
+                  <h4>　　繋ぎ言葉</h4>
                   <p>少ない</p>
-                </Flex>
-                <Flex justify="flex-start" align="flex-start" gap="xs">
-                  {showBar(fillersScore)}
-                </Flex>
-              </Flex>
-              <Space h="xl" />
-              <Flex
-                justify="flex-start"
-                align="flex-start"
-                direction="column"
-                wrap="wrap"
-              >
-                <Flex w="100%" justify="space-between" direction="row">
+                  </div>
+                  <div className="bar">{showBar(fillersScore)}</div>
+                </div>
+                <div className="indicator-container">
+                  <div className="indicator">
                   <p>不適切</p>
-                  <p>時間</p>
+                  <h4>時間</h4>
                   <p>適切</p>
-                </Flex>
-                <Flex justify="flex-start" align="flex-start" gap="xs">
-                  {showBar(timeScore)}
-                </Flex>
-              </Flex>
-            </Flex>
-            <Flex
-              justify="flex-start"
-              align="flex-start"
-              direction="column"
-              wrap="wrap"
-            >
-              <img src="/consultant.png" alt="" />
-              <p style={{ width: "20vw" }}>{Comment}</p>
-            </Flex>
-          </Flex>
+                  </div>
+                  <div className="bar">{showBar(timeScore)}</div>
+                </div>
+              </div>
+              <div className="fb-area">
+                <div className="circle"></div>
+                <img src="/consultant.png" alt="" />
+                <p style={{ width: "20vw" }}>{Comment}</p>
+              </div>
+            </div>
+          </div>
         </>
       )}
     </>
