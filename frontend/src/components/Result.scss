@@ -1,7 +1,7 @@
 .result-wrapper {
   display: flex;
   flex-direction: column;
-  padding: 30px;
+  padding: 50px 50px 0 50px;
 }
 
 .title-container {
@@ -59,9 +59,45 @@
     justify-content: center;
 
     .circle {
+        position: relative;
         width: 50vw;
         height: 70vh;
         background-color: #fe8c8c;
+        -webkit-clip-path: circle(60% at 70% 70%);
+        clip-path: circle(60% at 70% 70%);
+    }
+    .white-circle {
+        z-index: 2;
+        position: absolute;
+        right: 0;
+        top:0;
+        width: 50vw;
+        height: 70vh;
+        background-color: #F4F4F4;
+        -webkit-clip-path: circle(50% at 70% 70%);
+        clip-path: circle(50% at 70% 70%);
+    }
+    .img {
+        position: absolute;
+        right: 10%;
+        bottom: 5%;
+        width: 25%;
+        z-index: 3;
+    }
+    .comment-container {
+        z-index: 4;
+        position: absolute;
+        right: 7%;
+        bottom: 15%;
+        background-color: rgba(255, 255, 255, 0.8);
+        width: 30%;
+        height: 20%;
+        
+        .comment {
+            font-size: 18px;
+        }
     }
   }
 }
+
+

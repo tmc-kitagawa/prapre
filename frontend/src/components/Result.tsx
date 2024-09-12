@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { SlideResult } from "../global";
 import axios from "axios";
-import { Flex, Loader, Space } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import "@mantine/charts/styles.css";
 
 import { fbComment } from "../utils/FbComment";
@@ -171,25 +171,29 @@ const Result: FC<Props> = ({
                 </div>
                 <div className="indicator-container">
                   <div className="indicator">
-                  <p>多い</p>
-                  <h4>　　繋ぎ言葉</h4>
-                  <p>少ない</p>
+                    <p>多い</p>
+                    <h4>　　繋ぎ言葉</h4>
+                    <p>少ない</p>
                   </div>
                   <div className="bar">{showBar(fillersScore)}</div>
                 </div>
                 <div className="indicator-container">
                   <div className="indicator">
-                  <p>不適切</p>
-                  <h4>時間</h4>
-                  <p>適切</p>
+                    <p>不適切</p>
+                    <h4>時間</h4>
+                    <p>適切</p>
                   </div>
                   <div className="bar">{showBar(timeScore)}</div>
                 </div>
               </div>
               <div className="fb-area">
-                <div className="circle"></div>
-                <img src="/consultant.png" alt="" />
-                <p style={{ width: "20vw" }}>{Comment}</p>
+                <img src="/con.svg" alt="" className="img" />
+                <div className="comment-container">
+                  <p className="comment">{Comment}</p>
+                </div>
+                <div className="circle">
+                  <div className="white-circle"></div>
+                </div>
               </div>
             </div>
           </div>
