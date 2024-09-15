@@ -9,6 +9,7 @@ import { fbComment } from "../utils/FbComment";
 
 import "moment/dist/locale/ja";
 import "./Result.scss";
+import { getStyle } from "../utils/presenStyle";
 
 interface Props {
   userId: number | null;
@@ -27,8 +28,9 @@ const Result: FC<Props> = ({
   presentationTime,
   slide,
 }) => {
-  const [totalScore, setTotalScore] = useState<null | number>(null);
-  const [Comment, setComment] = useState<null | string>(null);
+  const [Comment, setComment] = useState<string[] | null>(null);
+  const [presenStyle, setPresenStyle] = useState<null | string>(null);
+  const [deviation, setDeviation] = useState<null | number>(null);
   const location = useLocation();
 
   const totalElapsedMilliSeconds: number = useLocation()
@@ -75,12 +77,11 @@ const Result: FC<Props> = ({
     (async () => {
       try {
         if (fillers.length === volumes.length) {
-          setTotalScore(
-            Math.floor(
-              (eyeScore + volumeScore + fillersScore + speedScore + timeScore) /
-                5
-            )
+          const totalScore = Math.floor(
+            (eyeScore + volumeScore + fillersScore + speedScore + timeScore) / 5
           );
+          const deviation = Math.floor(10 * (totalScore - 60) / 20 + 50);
+          setDeviation(deviation)
           const scoreData = {
             title: slide.name,
             startTime: location.state.starttime,
@@ -92,6 +93,7 @@ const Result: FC<Props> = ({
             scoreTime: timeScore,
           };
           setComment(fbComment(scoreData));
+          setPresenStyle(getStyle(scoreData));
           await axios.post("/api/histories", scoreData);
         }
       } catch (err) {
@@ -138,12 +140,12 @@ const Result: FC<Props> = ({
           <div className="result-wrapper">
             <div className="title-container">
               <h2 className="title">あなたのプレゼンスタイル</h2>
-              <p className="presen-style">お喋りマッチョコンサル</p>
+              <p className="presen-style">{presenStyle}</p>
             </div>
             <div className="result-container">
               <div className="indicator-wrapper">
                 <h3 className="deviation">
-                  偏差値 <span className="deviation-value">{totalScore}</span>
+                  偏差値 <span className="deviation-value">{deviation}</span>
                 </h3>
                 <div className="indicator-container">
                   <div className="indicator">
@@ -189,7 +191,13 @@ const Result: FC<Props> = ({
               <div className="fb-area">
                 <img src="/con.svg" alt="" className="img" />
                 <div className="comment-container">
-                  <p className="comment">{Comment}</p>
+                  {Comment?.map((comment, idx: number) =>
+                    idx === 0 ? (
+                      <p className="good-comment">{comment}</p>
+                    ) : (
+                      <p className="bad-comment">{comment}</p>
+                    )
+                  )}
                 </div>
                 <div className="circle">
                   <div className="white-circle"></div>

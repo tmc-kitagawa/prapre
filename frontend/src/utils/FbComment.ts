@@ -1,48 +1,70 @@
-import {ScoreData} from "../global";
+import { ScoreData } from "../global";
 
-interface Comment {
-    scoreEye: string;
-    scoreVolume: string;
-    scoreFiller: string;
-    scoreSpeed: string;
-    scoreTime: string;
-}
+export const fbComment = (scoreData: ScoreData): string[] => {
+  const ascSortedArr = [
+    { name: "scoreEye", score: scoreData.scoreEye },
+    { name: "scoreVolume", score: scoreData.scoreVolume },
+    { name: "scoreFiller", score: scoreData.scoreFiller },
+    { name: "scoreSpeed", score: scoreData.scoreSpeed },
+    { name: "scoreTime", score: scoreData.scoreTime },
+  ].sort(function (a, b) {
+    return a.score - b.score;
+  });
 
-export const fbComment = (scoreData: ScoreData): string => {
-    const ascSortedArr = [
-        {name: "scoreEye", score: scoreData.scoreEye},
-        {name: "scoreVolume", score: scoreData.scoreVolume},
-        {name: "scoreFiller", score: scoreData.scoreFiller},
-        {name: "scoreSpeed", score: scoreData.scoreSpeed},
-        {name: "scoreTime", score: scoreData.scoreTime}
-    ].sort(function (a, b) {
-        return (a.score - b.score);})
+  const minData = ascSortedArr[0];
+  const maxData = ascSortedArr[4];
 
-    const minData = ascSortedArr[0]
-    const maxData = ascSortedArr[4]
+  const comment = {
+    "scoreEye": [
+        "もっとカメラに目線を合わせれば、より視聴者の心を掴めるでしょう。",
+        "もっとカメラに目線を合わせれば、より視聴者の心を掴めるでしょう。",
+        "もっとカメラに目線を合わせれば、より視聴者の心を掴めるでしょう。",
+        "カメラ目線はできています。",
+        "カメラ目線はバッチリです。",
+    ],
+    "scoreVolume": [
+        "もっと声を出した方が良いでしょう。",
+        "もう少し声を出した方が良いでしょう。",
+        "声がもう少し出るとより良いです。",
+        "声はよく出ています。",
+        "声はよく出ており、自信のあるプレゼンに感じられます。",
+      ],
+    "scoreFiller": [
+        "繋ぎ言葉が多いため、意識して減らすようにすると説得力が増します。",
+        "繋ぎ言葉が多いため、意識して減らすようにすると説得力が増します。",
+        "繋ぎ言葉を減らせれば、より説得力が増すことでしょう。",
+        "繋ぎ言葉があまりなく、説得力が感じられます。",
+        "繋ぎ言葉がほぼなく、説得力のあるプレゼンができています。",
+    ],
+    "scoreSpeed": [
+        "話すスピードが早いため、もう少し文章を抑えてもいいでしょう。",
+        "話すスピードが若干早いので、もう少し文章を抑えてもいいでしょう。",
+        "話すスピードが若干早いので、もう少し文章を抑えてもいいでしょう。",
+        "話す時間は適切です。",
+        "話す時間は適切です。",
+      ],
+    "scoreTime": [
+        "時間が大幅にずれているため、調整が必要かもしれません。",
+        "時間が大幅にずれているため、調整が必要かもしれません。",
+        "時間がずれているため、調整が必要かもしれません。",
+        "時間がずれているため、調整が必要かもしれません。",
+        "時間調整はほぼパーフェクトです。",
+    ]
+  }
 
-    const goodFb: Comment = {
-        scoreEye: "カメラをよく見てプレゼンできていますね。",
-        scoreVolume: "ハキハキとプレゼンができていますね。",
-        scoreFiller: "流暢にプレゼンができていますね。",
-        scoreSpeed: "聞き取りやすいプレゼンができていますね。",
-        scoreTime: "時間を守れていますね。",
-    }
+  type ScoreKey = 'scoreEye' | 'scoreVolume' | 'scoreFiller' | 'scoreSpeed' | 'scoreTime';
 
-    const badFb: Comment = {
-        scoreEye: "あまりカメラが見れていません。次回は目線を意識してみましょう！",
-        scoreVolume: "声の大きさが適切ではありません。次回はハキハキと発表しましょう！",
-        scoreFiller: "繋ぎ言葉が多いです。次回は繋ぎ言葉を使わないように意識しましょう！",
-        scoreSpeed: "話す速度が早すぎます。次回はもう少しゆっくりと話しましょう！",
-        scoreTime: "発表時間が適切ではありません。次回は時間に気をつけて発表をしましょう！",
-    }
+  const result = []
+  if (maxData.score > 60) {
+    result.push(comment[maxData.name as ScoreKey][Math.floor((maxData.score - 0.5) / 20)])
+  } else {
+    result.push("")
+  }
+  if (minData.score <= 60) {
+    result.push(comment[minData.name as ScoreKey][Math.floor((minData.score - 0.5) / 20)])
+  } else {
+    result.push("")
+  }
 
-    if(maxData.score < 80){
-        return `${badFb[minData.name as keyof Comment]}`
-    } else if (minData.score >= 80){
-        return `${goodFb[maxData.name as keyof Comment]}\n良いプレゼンができていますね`
-    } else {
-        return `${goodFb[maxData.name as keyof Comment]}\nただし、${badFb[minData.name as keyof Comment]}`
-    }
-}
-
+  return result;
+};
