@@ -37,18 +37,18 @@ export const fbComment = (scoreData: ScoreData): string[] => {
         "繋ぎ言葉がほぼなく、説得力のあるプレゼンができています。",
     ],
     "scoreSpeed": [
+        "話すスピードが早いため、もう少し落ち着きましょう。",
         "話すスピードが早いため、もう少し文章を抑えてもいいでしょう。",
         "話すスピードが若干早いので、もう少し文章を抑えてもいいでしょう。",
-        "話すスピードが若干早いので、もう少し文章を抑えてもいいでしょう。",
-        "話す時間は適切です。",
-        "話す時間は適切です。",
+        "話す速度は適切です。",
+        "話す速度は適切です。",
       ],
     "scoreTime": [
         "時間が大幅にずれているため、調整が必要かもしれません。",
         "時間が大幅にずれているため、調整が必要かもしれません。",
         "時間がずれているため、調整が必要かもしれません。",
-        "時間がずれているため、調整が必要かもしれません。",
-        "時間調整はほぼパーフェクトです。",
+        "時間調整はほぼ問題ありません。",
+        "時間調整は文句なしです",
     ]
   }
 
@@ -61,7 +61,7 @@ export const fbComment = (scoreData: ScoreData): string[] => {
     result.push("")
   }
   if (minData.score <= 60) {
-    result.push(comment[minData.name as ScoreKey][Math.floor((minData.score - 0.5) / 20)])
+    result.push(comment[minData.name as ScoreKey][Math.max(0, Math.floor((minData.score - 0.5) / 20))])
   } else {
     result.push("")
   }

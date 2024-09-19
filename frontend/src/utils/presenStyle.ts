@@ -1,18 +1,18 @@
 import {ScoreData} from "../global";
 
-export const getStyle = ({scoreEye, scoreVolume, scoreFiller, scoreSpeed, scoreTime}: ScoreData): string => {
+export const getStyle = ({scoreEye, scoreVolume, scoreFiller, scoreSpeed, scoreTime}: ScoreData, setName: React.Dispatch<React.SetStateAction<string>>): string => {
     let result = ""
 
     if (scoreSpeed <= 20) {
-        result += ""
+        result += "早口"
     } else if (scoreSpeed <= 40) {
-        result += ""
+        result += "お喋り"
     } else if (scoreSpeed <= 60) {
         result += ""
     } else if (scoreSpeed <= 80) {
-        result += ""
+        result += "デキる"
     } else {
-        result += ""
+        result += "カリスマ"
     }
 
     if (scoreVolume <= 20) {
@@ -31,14 +31,19 @@ export const getStyle = ({scoreEye, scoreVolume, scoreFiller, scoreSpeed, scoreT
 
     if (others <= 20) {
         result += "大学生"
+        setName("student")
     } else if (others <= 40) {
         result += "フレッシュマン"
+        setName("freshman")
     } else if (others <= 60) {
         result += "営業"
+        setName("sales")
     } else if (others <= 80) {
         result += "コンサル"
+        setName("consultant")
     } else {
         result += "起業家"
+        setName("entrepreneur")
     }
 
     return result

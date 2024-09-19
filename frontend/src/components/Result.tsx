@@ -31,6 +31,7 @@ const Result: FC<Props> = ({
   const [Comment, setComment] = useState<string[] | null>(null);
   const [presenStyle, setPresenStyle] = useState<null | string>(null);
   const [deviation, setDeviation] = useState<null | number>(null);
+  const [name, setName] = useState("");
   const location = useLocation();
 
   const totalElapsedMilliSeconds: number = useLocation()
@@ -80,8 +81,8 @@ const Result: FC<Props> = ({
           const totalScore = Math.floor(
             (eyeScore + volumeScore + fillersScore + speedScore + timeScore) / 5
           );
-          const deviation = Math.floor(10 * (totalScore - 60) / 20 + 50);
-          setDeviation(deviation)
+          const deviation = Math.floor((10 * (totalScore - 60)) / 20 + 50);
+          setDeviation(deviation);
           const scoreData = {
             title: slide.name,
             startTime: location.state.starttime,
@@ -93,7 +94,7 @@ const Result: FC<Props> = ({
             scoreTime: timeScore,
           };
           setComment(fbComment(scoreData));
-          setPresenStyle(getStyle(scoreData));
+          setPresenStyle(getStyle(scoreData, setName));
           await axios.post("/api/histories", scoreData);
         }
       } catch (err) {
@@ -189,7 +190,12 @@ const Result: FC<Props> = ({
                 </div>
               </div>
               <div className="fb-area">
-                <img src="/con.svg" alt="" className="img" />
+                <img src={`/${name}.png`} alt="" className={`img ${name}`} />
+                {/* <img src="/entrepreneur.png" alt="" className="img entrepreneur" /> */}
+                {/* <img src="/consultant.png" alt="" className="img consultant" /> */}
+                {/* <img src="/sales.png" alt="" className="img sales" /> */}
+                {/* <img src="/freshman.png" alt="" className="img freshman" /> */}
+                {/* <img src="/student.png" alt="" className="img student" /> */}
                 <div className="comment-container">
                   {Comment?.map((comment, idx: number) =>
                     idx === 0 ? (

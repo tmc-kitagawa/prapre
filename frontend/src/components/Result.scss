@@ -79,10 +79,36 @@
     }
     .img {
         position: absolute;
-        right: 10%;
-        bottom: 5%;
-        width: 25%;
         z-index: 3;
+    }
+    .entrepreneur {
+      right: 5%;
+      bottom: 8%;
+      width: 40%;
+      height: 75%;
+    }
+    .consultant {
+      right: 10%;
+      bottom: 5%;
+      width: 25%;
+    }
+    .sales {
+      right: 2%;
+      bottom: 5%;
+      width: 45%;
+      height: 75%;
+    }
+    .freshman {
+      right: 3%;
+      bottom: 5%;
+      width: 40%;
+      height: 75%;
+    }
+    .student {
+      right: 3%;
+      bottom: 5%;
+      width: 40%;
+      height: 80%;
     }
     .comment-container {
         z-index: 4;
@@ -94,13 +120,13 @@
         height: 20%;
         
         .good-comment {
-            font-size: 18px;
+            font-size: 20px;
             color: #007AFF;
             font-weight: bold;
         }
 
         .bad-comment {
-          font-size: 18px;
+          font-size: 20px;
           color: #FF3830;
           font-weight: bold;
       }

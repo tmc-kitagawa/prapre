@@ -136,6 +136,7 @@ const Home: FC<Props> = ({
                 <Button type="submit" w="150px" h="25px">
                   すすむ
                 </Button>
+                <span>※ 推奨ブラウザ Chrome</span>
               </Group>
             </form>
           </Flex>
