@@ -6,6 +6,7 @@ import "@mantine/core/styles.css";
 import '@mantine/dropzone/styles.css';
 import {useState} from "react";
 import Presentation from "./components/Presentation.tsx";
+import { AllResults } from "./components/AllResults.tsx";
 
 const App = () => {
     const [userId, setUserId] = useState<null | number>(null)
@@ -20,6 +21,7 @@ const App = () => {
                 <Route path="/" element={<Home setUserId={setUserId} slide={slide} setSlide={setSlide} setPresentationTime={setPresentationTime}/>}/>
                 <Route path="presentation" element={<Presentation slide={slide} presentationTime={presentationTime} setFillers={setFillers} setVolumes={setVolumes}/>}/>
                 <Route path="result" element={<Result userId={userId} fillers={fillers} setFillers={setFillers} volumes={volumes} setVolumes={setVolumes} presentationTime={presentationTime} slide={slide}/>}/>
+                <Route path="allresults" element={<AllResults />} />
             </Routes>
         </MantineProvider>
     )
