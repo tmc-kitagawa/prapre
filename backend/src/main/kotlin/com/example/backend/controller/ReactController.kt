@@ -19,4 +19,9 @@ class ReactController {
     fun result(): String {
         return "forward:/"
     }
+
+    @GetMapping("/allresults")
+    fun allResult(): String {
+        return "forward:/"
+    }
 }
