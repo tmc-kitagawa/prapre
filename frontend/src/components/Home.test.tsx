@@ -33,6 +33,7 @@ const renderApp = () => {
             slide={slide}
             setSlide={setSlide}
             setPresentationTime={setPresentationTime}
+            setNumPages={vi.fn()}
           />
         </MantineProvider>
       </BrowserRouter>
