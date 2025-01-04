@@ -1,0 +1,121 @@
+.videoContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.videoWrapper {
+  width: 40%;
+  position: relative;
+}
+
+.video {
+  width: 100%;
+}
+
+.videoPage {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.timelineContainer {
+  display: flex;
+}
+
+.captionContainer {
+  display: flex;
+  flex-direction: column;
+  min-width: 70px;
+  gap: 10px;
+}
+
+.captionPage {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  p {
+    margin: 0;
+  }
+}
+
+.captionFiller {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  p {
+    margin: 0;
+  }
+}
+
+.detailContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  gap: 10px;
+}
+
+.pageContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.page {
+  background-color: #F4F4F4 !important;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.pagesContainer {
+  display: flex;
+  gap: 10px;
+}
+
+.timeBox {
+  position: relative;
+  background-color: #1899FF;
+  height: 30px;
+  clip-path: polygon(100% 0%, 100% 50%, 100% 100%, 0% 100%, 10px 50%, 0% 0%);
+}
+
+.filler {
+  position: absolute;
+  width: 5px;
+  height: 100%;
+  top: 0;
+  background-color: #EE4924;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.upperTriangle {
+  position: absolute;
+  background-color: #F4F4F4;
+  width: 10px;
+  height: 15px;
+  right: 0;
+  top: 0;
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+}
+
+.lowerTriangle {
+  position: absolute;
+  background-color: #F4F4F4;
+  width: 10px;
+  height: 15px;
+  right: 0;
+  bottom: 0;
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+}
+
+.timeContainer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}

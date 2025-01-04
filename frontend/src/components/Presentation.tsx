@@ -16,6 +16,7 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import {Flex, Box, Group, ActionIcon, Progress, Center} from '@mantine/core'
 import {FaRegPlayCircle, FaRegStopCircle} from "react-icons/fa"
+import {FileWithPath} from "@mantine/dropzone";
 
 declare global {
     interface Window {
@@ -29,10 +30,12 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 interface Props {
-    slide: File;
+    slide: FileWithPath;
     presentationTime: string;
-    setFillers: React.Dispatch<React.SetStateAction<number[]>>
+    setFillerScores: React.Dispatch<React.SetStateAction<number[]>>
     setVolumes: React.Dispatch<React.SetStateAction<number[]>>
+    numPages: number;
+    setFillers: React.Dispatch<React.SetStateAction<number[][]>>
 }
 
 interface ChangePageHandle {
@@ -40,7 +43,7 @@ interface ChangePageHandle {
 }
 
 
-const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolumes}) => {
+const Calibration = memo<Props>(({slide, presentationTime, setFillerScores, setVolumes, numPages, setFillers}) => {
     const navigate = useNavigate()
     const [calibrated, setCalibrated] = useState(false)
     const [started, setStarted] = useState(false)
@@ -48,6 +51,8 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
     const [slided, setSlided] = useState(false)
     const [end, setEnd] = useState(false)
     const [yellowPoints, setYellowPoints] = useState(PointCalibrate)
+    const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+    const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
 
     let countFastSpeed: MutableRefObject<number> = useRef(0)
     let countVariable: MutableRefObject<number> = useRef(0);
@@ -60,17 +65,45 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
 
     const webgazer = window.webgazer;
 
-    const keyDownEvent = useCallback ((event: any) => {
+    const keyDownEvent = useCallback((event: any) => {
         if (event.key === 'ArrowDown' || event.key === ' ' || event.key === 'Enter' || event.key === 'ArrowRight') {
             pdfViewerRef.current?.changePage(1)
         }
-    },[])
+    }, [])
 
-    const startEnterEvent = useCallback((event:any) => {
+    const startEnterEvent = useCallback((event: any) => {
         if (event.key === 'Enter') {
             setStarted(true)
         }
     }, [])
+
+    useEffect(() => {
+        async function setupCamera() {
+            try {
+                // 映像 + 音声を取得
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true,
+                });
+
+                // MediaRecorder のインスタンスを生成
+                const recorder = new MediaRecorder(stream, {mimeType: "video/webm; codecs=vp8,opus"});
+
+                // データの断片が利用可能になったときに取り出して格納
+                recorder.ondataavailable = (event: BlobEvent) => {
+                    if (event.data.size > 0) {
+                        setRecordedChunks((prev) => [...prev, event.data]);
+                    }
+                };
+
+                setMediaRecorder(recorder);
+            } catch (error) {
+                console.error('カメラやマイクへのアクセスに失敗しました', error);
+            }
+        }
+
+        setupCamera()
+    }, []);
 
     useEffect(() => {
         docLoad(setCalibrated);
@@ -113,6 +146,11 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
             startUnixTime.current = Number(new Date());
             startAmivoice()
 
+            if (mediaRecorder) {
+                setRecordedChunks([]);
+                mediaRecorder.start();
+            }
+
             window.removeEventListener('keydown', startEnterEvent)
             window.addEventListener('keydown', keyDownEvent)
         }
@@ -120,10 +158,12 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
     }, [started]);
 
     useEffect(() => {
-        if (end && !slided) {
-            navigate("/result", {state: {slideScore: arrSlideResult, starttime: startUnixTime.current}})
+        if (end && !slided && recordedChunks.length !== 0) {
+            const blob = new Blob(recordedChunks, {type: 'video/webm'});
+            const recordedUrl = URL.createObjectURL(blob);
+            navigate("/result", {state: {slideScore: arrSlideResult, starttime: startUnixTime.current, recoededUrl: recordedUrl}})
         }
-    }, [end, slided]);
+    }, [end, slided, recordedChunks]);
 
     const slideHandle = () => {
         setSlided(true)
@@ -135,7 +175,7 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
             countFastSpeed: Math.floor((countAll.current - countFastSpeed.current) * 100 / countAll.current)
         }
         setArrSlideResult(prev => [...prev, resultObj])
-        stopAmivoice(setFillers)
+        stopAmivoice(setFillerScores, setFillers)
         startAmivoice()
 
         countVariable.current = 0;
@@ -148,7 +188,9 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
         setSlided(true)
         countPercentage.current = Math.floor((countVariable.current * 100) / countAll.current);
         elapsedTime.current = Number(new Date()) - slideStartTime.current;
-        stopAmivoice(setFillers)
+        stopAmivoice(setFillerScores, setFillers)
+
+        mediaRecorder!.stop();
 
         webgazer.pause()
         webgazer.end()
@@ -233,53 +275,42 @@ const Calibration = memo<Props>(({slide, presentationTime, setFillers, setVolume
                 </div>
             </div>
 
-
-            {calibrated ?
-                <>
-                    <Flex direction="column">
-                        <Group justify="space-between">
-                            <Flex direction="column">
-                                <Box h="170" w="200px"/>
-                                <VolumeMeter setVolumes={setVolumes} started={started} slided={slided}
-                                             setSlided={setSlided}/>
-                            </Flex>
-
-                            {started ?
-                                <ActionIcon variant="subtle" size="100px" radius="50px">
-                                    <FaRegStopCircle size="100px" onClick={() => {
-                                        stopHandle()
-                                    }}/>
-                                </ActionIcon>
-                                :
-                                <ActionIcon variant="subtle" size="100px" radius="50px">
-                                    <FaRegPlayCircle size="100px" onClick={() => {
-                                        setStarted(true)
-                                    }}/>
-                                </ActionIcon>
-                            }
-                            <Timer presentationTime={presentationTime} started={started} />
-                            <div style={{width: "500px", height: "200px"}} className='chart-container'>
-                                <canvas id="myChart"></canvas>
-                            </div>
-                        </Group>
-                        {/*<Center>*/}
-                        {/*    {!started ?*/}
-                        {/*        <p>再生ボタンをクリックするか、Enterキーを押して、練習を開始してください。</p>*/}
-                        {/*        :*/}
-                        {/*        (<div>*/}
-                        {/*            <p>ページをクリックするか、右矢印／下矢印／Enterキー／スペースキーを押すと、ページをめくれます。</p>*/}
-                        {/*            <p>停止ボタンをクリックすると、練習を終了して結果画面に移動します。</p>*/}
-                        {/*        </div>)*/}
-                        {/*    }*/}
-                        {/*</Center>*/}
-                        <PdfViewer ref={pdfViewerRef} file={slide} slideHandle={slideHandle} started={started}/>
-                    </Flex>
-
-                </>
-                :
+            {!calibrated &&
                 <Center>
-                    <Progress value={ yellowPoints * 100 / 9 } w="1000px" />
-                </Center>}
+                    <Progress value={yellowPoints * 100 / 9} w="1000px"/>
+                </Center>
+            }
+
+            {calibrated &&
+                <Flex direction="column">
+                    <Group justify="space-between">
+                        <Flex direction="column">
+                            <Box h="170" w="200px"/>
+                            <VolumeMeter setVolumes={setVolumes} started={started} slided={slided}
+                                         setSlided={setSlided}/>
+                        </Flex>
+
+                        {started ?
+                            <ActionIcon variant="subtle" size="100px" radius="50px">
+                                <FaRegStopCircle size="100px" onClick={() => {
+                                    stopHandle()
+                                }}/>
+                            </ActionIcon>
+                            :
+                            <ActionIcon variant="subtle" size="100px" radius="50px">
+                                <FaRegPlayCircle size="100px" onClick={() => {
+                                    setStarted(true)
+                                }}/>
+                            </ActionIcon>
+                        }
+                        <Timer presentationTime={presentationTime} started={started}/>
+                        <div style={{width: "500px", height: "200px"}} className='chart-container'>
+                            <canvas id="myChart"></canvas>
+                        </div>
+                    </Group>
+                    <PdfViewer ref={pdfViewerRef} file={slide} slideHandle={slideHandle} started={started} numPages={numPages}/>
+                </Flex>
+            }
         </>
     );
 })

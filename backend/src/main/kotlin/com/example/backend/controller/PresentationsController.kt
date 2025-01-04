@@ -27,7 +27,7 @@ class PresentationsController(val presentationRepository: PresentationRepository
     @ResponseStatus(HttpStatus.CREATED)
     fun addHistories(@RequestBody request: Request): String {
         presentationRepository.insertHistory(request)
-        return "historyをPOSTするよ!"
+        return "histories saved"
     }
 }
 

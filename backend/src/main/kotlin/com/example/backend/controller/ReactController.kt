@@ -5,23 +5,23 @@ import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
 class ReactController {
-    @GetMapping("/calibration")
-    fun calibration(): String {
-        return "forward:/"
-    }
-
     @GetMapping("/presentation")
     fun presentation(): String {
-        return "forward:/"
+        return "redirect:/"
     }
 
     @GetMapping("/result")
     fun result(): String {
-        return "forward:/"
+        return "redirect:/"
     }
 
     @GetMapping("/allresults")
     fun allResult(): String {
+        return "forward:/"
+    }
+
+    @GetMapping("/record")
+    fun record(): String {
         return "forward:/"
     }
 }

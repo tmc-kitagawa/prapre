@@ -1,10 +1,10 @@
 import { Group, Text, rem } from '@mantine/core';
 import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
-import { Dropzone,  PDF_MIME_TYPE } from '@mantine/dropzone';
-import {Dispatch, FC, SetStateAction} from "react";
+import {Dropzone, FileWithPath, PDF_MIME_TYPE} from '@mantine/dropzone';
+import { FC } from "react";
 
 interface Props {
-    setSlide:  Dispatch<SetStateAction<File | null |  string>>
+    setSlide:   React.Dispatch<React.SetStateAction<FileWithPath | undefined>>
 }
 
 export const PdfDropzone : FC<Props> = (props) => {
@@ -15,8 +15,8 @@ export const PdfDropzone : FC<Props> = (props) => {
         <Dropzone
             onDrop={(files) => {
                 setSlide(files[0])
-                console.log(files[0])
             }}
+            multiple={false}
             onReject={(files) => console.log('rejected files', files)}
             // maxSize={5 * 1024 ** 2}
             accept={PDF_MIME_TYPE}
@@ -44,7 +44,7 @@ export const PdfDropzone : FC<Props> = (props) => {
 
                 <div>
                     <Text size="xl" inline>
-                        クリック　or　PDFファイルをドラッグ&ドロップ
+                        クリック　or　PDFをドラッグ&ドロップ
                     </Text>
                     {/*<Text size="sm" c="dimmed" inline mt={7}>*/}
                     {/*    Attach as many files as you like, each file should not exceed 5mb*/}

@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction, useEffect } from "react";
+import React, { FC, useEffect } from "react";
 import { useRef } from "react";
 import { ActionIcon, rem } from "@mantine/core";
 import { TimeInput } from "@mantine/dates";
@@ -11,6 +11,7 @@ import { Document, Page } from "react-pdf";
 // import axios from "axios";
 // import Signout from "./Signout";
 import "./Home.scss";
+import {FileWithPath} from "@mantine/dropzone";
 
 // import {FaSignOutAlt, FaUser} from "react-icons/fa";
 // import {useDisclosure} from "@mantine/hooks";
@@ -22,9 +23,10 @@ interface Values {
 
 interface Props {
   setUserId: React.Dispatch<React.SetStateAction<number | null>>;
-  slide: any;
-  setSlide: Dispatch<SetStateAction<File | null | string>>;
+  slide?:  FileWithPath;
+  setSlide:  React.Dispatch<React.SetStateAction<FileWithPath | undefined>>;
   setPresentationTime: React.Dispatch<React.SetStateAction<string>>;
+  setNumPages: React.Dispatch<React.SetStateAction<number>>
 }
 
 const Home: FC<Props> = ({
@@ -32,6 +34,7 @@ const Home: FC<Props> = ({
   slide,
   setSlide,
   setPresentationTime,
+    setNumPages
 }) => {
   // const [opened, {open, close}] = useDisclosure(false);
   // const [opened, {toggle}] = useDisclosure();
@@ -77,6 +80,11 @@ const Home: FC<Props> = ({
     navigate("/presentation");
   };
 
+  // PDFファイルのページ数を取得する
+  const onDocumentLoadSuccess = ({numPages}: { numPages: number }) => {
+    setNumPages(numPages);
+  };
+
   return (
     <>
       {/*<Drawer opened={opened} onClose={close} position="right" overlayProps={{backgroundOpacity: 0}}>*/}
@@ -116,7 +124,7 @@ const Home: FC<Props> = ({
             <div className="drop-container" style={{ width: "80%" }}>
               {slide && (
                 <div className="thumnail-container">
-                  <Document file={slide}>
+                  <Document file={slide} onLoadSuccess={onDocumentLoadSuccess}>
                     <Page width={200} pageNumber={1} />
                   </Document>
                 </div>
@@ -133,7 +141,7 @@ const Home: FC<Props> = ({
                   key={form.key("time")}
                   {...form.getInputProps("time")}
                 />
-                <Button type="submit" w="150px" h="25px">
+                <Button type="submit" w="150px" h="25px" disabled={slide === undefined}>
                   すすむ
                 </Button>
                 <span>※ 推奨ブラウザ Chrome</span>

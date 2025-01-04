@@ -5,7 +5,7 @@ let audioData: Float32Array[] = [];
 const bufferSize = 1024;
 let audioContext: null | AudioContext = null
 
-const exportWAV = function (audioData: Float32Array[], setFillers: React.Dispatch<React.SetStateAction<number[]>>) {
+const exportWAV = function (audioData: Float32Array[], setFillerScores: React.Dispatch<React.SetStateAction<number[]>>, setFillers: React.Dispatch<React.SetStateAction<number[][]>>) {
 
     const encodeWAV = function (samples: Float32Array, sampleRate: number) {
         const buffer = new ArrayBuffer(44 + samples.length * 2);
@@ -69,7 +69,9 @@ const exportWAV = function (audioData: Float32Array[], setFillers: React.Dispatc
     axios.post('https://acp-api.amivoice.com/v1/recognize', data).then(res => {
         console.log(res.data)
         const count = (res.data.text.match(/\%/g) || []).length * 3;
-        setFillers(prev => [...prev, Math.max(100 - count, 0)])
+        setFillerScores(prev => [...prev, Math.max(100 - count, 0)])
+        const fillers = res.data.results[0].tokens.filter((result: any) => result.written.includes("%")).map((result: any) => result.starttime / 1000)
+        setFillers(prev => [...prev, fillers])
     })
 };
 
@@ -101,8 +103,8 @@ export const startAmivoice = () => {
         .then(handleSuccess);
 }
 
-export const stopAmivoice = (setFillers: React.Dispatch<React.SetStateAction<number[]>>) => {
-    exportWAV(audioData, setFillers)
+export const stopAmivoice = (setFillerScores: React.Dispatch<React.SetStateAction<number[]>>, setFillers: React.Dispatch<React.SetStateAction<number[][]>>) => {
+    exportWAV(audioData, setFillerScores, setFillers)
     audioContext?.close()
     audioData = []
 }
